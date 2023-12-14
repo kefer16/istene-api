@@ -5,7 +5,6 @@ import {
    ActualizaDireccionUsuario,
    ActualizaFotoUsuario,
    ActualizaNombreUsuario,
-   UsuarioHistorialSend,
    UsuarioLoginSend,
    UsuarioPasswordLogin,
    UsuarioSend,
@@ -175,25 +174,6 @@ export class UsuarioController {
             where: {
                usuario: usuario,
                contrasenia: contrasenia_encriptada.contrasenia,
-            },
-         });
-
-         return result;
-      });
-   }
-
-   static async historial(req: Request, res: Response) {
-      type tipo = UsuarioHistorialSend[];
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
-
-         const result: tipo = await prisma.usuario_historial.findMany({
-            where: {
-               usuario_id: ID,
-            },
-            orderBy: {
-               fecha_final: "desc",
             },
          });
 
