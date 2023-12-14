@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Api_envio {
+  api_envio_id   Int      @id @default(autoincrement()) @db.Int
+  codigo_envio   String   @unique
+  tipo_peticion  String   @db.VarChar(10)
+  url            String   @db.VarChar(150)
+  parametros     String   @db.VarChar(max)
+  llave          String   @db.VarChar(max)
+  cabeceras      String   @db.VarChar(max)
+  tipo_contenido String   @db.VarChar(max)
+  cuerpo         String   @db.VarChar(max)
+  respuesta      String   @db.VarChar(max)
+  agente         String   @db.VarChar(150)
+  fecha_creacion DateTime @db.DateTime
+  fk_usuario     Int      @db.Int
+  cls_usuario    Usuario  @relation(fields: [fk_usuario], references: [usuario_id])
+  estatus        Int      @db.Int
+}
+
+model Error {
+  error_id       Int      @id @default(autoincrement()) @db.Int
+  codigo         String   @db.VarChar(10)
+  linea          Int      @db.Int
+  objeto         String   @db.VarChar(max)
+  mensaje        String   @db.VarChar(max)
+  servidor       String   @db.VarChar(150)
+  fecha_registro DateTime @db.DateTime
+  fk_usuario     Int      @db.Int
+  codigo_envio   String   @unique
+  cls_usuario    Usuario  @relation(fields: [fk_usuario], references: [usuario_id])
+
+}
+
+model Usuario {
+  usuario_id          Int               @id @default(autoincrement()) @db.Int
+  nombre              String            @db.VarChar(150)
+  apellido            String            @db.VarChar(150)
+  correo              String            @unique @db.VarChar(150)
+  usuario             String            @unique @db.VarChar(150)
+  contrasenia         String?           @db.VarChar(150)
+  foto                String            @db.VarChar(max)
+  direccion           String            @unique @db.VarChar(500)
+  telefono            String            @db.VarChar(30)
+  fecha_registro      DateTime          @db.DateTime
+  activo              Boolean           @db.Bit
+  fk_privilegio       Int               @db.Int
+  fecha_inicial       DateTime?         @db.DateTime2
+  fecha_final         DateTime?         @db.DateTime2
+  cls_privilegio      Privilegio        @relation(fields: [fk_privilegio], references: [privilegio_id])
+  lst_api_envio       Api_envio[]
+  lst_error           Error[]
+}
+
+model Privilegio {
+  privilegio_id  Int       @id @default(autoincrement()) @db.Int
+  tipo           String    @unique @db.VarChar(50)
+  activo         Boolean   @db.Bit
+  abreviatura    String    @unique @db.VarChar(3)
+  fecha_registro DateTime  @db.DateTime
+  lst_usuario    Usuario[]
+}
+

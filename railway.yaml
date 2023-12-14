@@ -1,0 +1,4 @@
+env: node
+services:
+ web:
+  start: npm start

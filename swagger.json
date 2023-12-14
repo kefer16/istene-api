@@ -1,0 +1,281 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "API Gamertec",
+		"description": "Esta es una API RESTful de una tienda online orientada a Gamers",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "${API_HOST}"
+		}
+	],
+	"basePath": "/",
+	"schemes": ["http", "https"],
+	"paths": {
+		"/usuario/todos/": {
+			"get": {
+				"tags": ["Usuario"],
+				"summary": "Listar todos los usuarios",
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/usuario/uno": {
+			"get": {
+				"tags": ["Usuario"],
+				"summary": "Listar un usuario",
+				"parameters": [
+					{
+						"name": "usuario_id",
+						"in": "query",
+						"description": "ID del usuario a listar",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/usuario/registrar/": {
+			"post": {
+				"tags": ["Usuario"],
+				"summary": "Registrar un usuario",
+				"requestBody": {
+					"description": "Datos del usuario a registrar",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Usuario"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/usuario/actualizar": {
+			"put": {
+				"tags": ["Usuario"],
+				"summary": "Actualizar un usuario",
+				"parameters": [
+					{
+						"name": "usuario_id",
+						"in": "query",
+						"required": true,
+						"description": "ID del usuario a actualizar",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Datos del usuario a actualizar",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Usuario"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/privilegio/todos/": {
+			"get": {
+				"tags": ["Privilegio"],
+				"summary": "Listar todos los privilegios",
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/privilegio/uno": {
+			"get": {
+				"tags": ["Privilegio"],
+				"summary": "Listar un privilegio",
+				"parameters": [
+					{
+						"name": "privilegio_id",
+						"in": "query",
+						"description": "ID del privilegio",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/privilegio/registrar/": {
+			"post": {
+				"tags": ["Privilegio"],
+				"summary": "Registrar un privilegio",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Privilegio"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		},
+		"/privilegio/actualizar": {
+			"put": {
+				"tags": ["Privilegio"],
+				"summary": "Actualizar un privilegio",
+				"parameters": [
+					{
+						"name": "privilegio_id",
+						"in": "query",
+						"description": "ID del privilegio",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Privilegio"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Operación exitosa"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Respuesta": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer",
+						"example": 200,
+						"description": "Código de respuesta de petición"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Usuario"
+						},
+						"description": "Se define un modelo de Usuario"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Error"
+					}
+				}
+			},
+			"Error": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer",
+						"example": 2627
+					},
+					"message": {
+						"type": "string",
+						"example": "Error en la aplicación o SQL"
+					}
+				}
+			},
+			"Usuario": {
+				"type": "object",
+				"properties": {
+					"usuario_id": {
+						"type": "integer"
+					},
+					"nombre": {
+						"type": "string"
+					},
+					"apellido": {
+						"type": "string"
+					},
+					"correo": {
+						"type": "string"
+					},
+					"usuario": {
+						"type": "string"
+					},
+					"contrasenia": {
+						"type": "string"
+					},
+					"dinero": {
+						"type": "number"
+					},
+					"fk_privilegio": {
+						"type": "number"
+					}
+				},
+				"required": [
+					"nombre",
+					"apellido",
+					"correo",
+					"usuario",
+					"contrasenia",
+					"dinero",
+					"fk_privilegio"
+				]
+			},
+
+			"Privilegio": {
+				"type": "object",
+				"properties": {
+					"tipo": {
+						"type": "string",
+						"description": "Tipo de privilegio"
+					},
+					"activo": {
+						"type": "integer",
+						"description": "Estado de activación del privilegio"
+					},
+					"abreviatura": {
+						"type": "string",
+						"description": "Abreviatura del privilegio"
+					}
+				},
+				"required": ["tipo", "activo", "abreviatura"]
+			}
+		}
+	}
+}
