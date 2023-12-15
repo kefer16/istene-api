@@ -3,12 +3,12 @@ import { UsuarioController } from "../controllers/usuario.controller";
 
 const router = Router();
 
-router.get("/todos", UsuarioController.listarTodos);
-router.get("/uno", UsuarioController.listarUno);
-router.post("/registrar", UsuarioController.registrar);
-router.put("/actualizar", UsuarioController.actualizar);
+router.get("/listar_todos", UsuarioController.listarTodos);
+router.get("/listar_uno", UsuarioController.listarUno);
+router.post("/registrar_uno", UsuarioController.registrar);
+router.put("/actualizar_uno", UsuarioController.actualizar);
 router.post("/login", UsuarioController.login);
-router.delete("/eliminar", UsuarioController.eliminarUno);
+router.delete("/eliminar_uno", UsuarioController.eliminarUno);
 router.put("/actualizar_nombre", UsuarioController.actualizarNombre);
 router.put("/actualizar_apellido", UsuarioController.actualizarApellido);
 router.put("/actualizar_correo", UsuarioController.actualizarCorreo);

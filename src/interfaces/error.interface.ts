@@ -6,5 +6,4 @@ export interface ErrorProps {
    mensaje: string;
    servidor: string;
    fecha_registro: string;
-   fk_usuario: number;
 }

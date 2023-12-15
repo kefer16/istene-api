@@ -31,14 +31,14 @@ export class UsuarioController {
       type tipo = UsuarioSend | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: number = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
 
          const result: UsuarioSend | null = await prisma.usuario.findUnique({
             include: {
                cls_privilegio: {
                   select: {
                      privilegio_id: true,
-                     tipo: true,
+                     nombre: true,
                   },
                },
             },
@@ -53,7 +53,8 @@ export class UsuarioController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          let {
             nombre,
-            apellido,
+            apellido_paterno,
+            apellido_materno,
             correo,
             usuario,
             contrasenia,
@@ -69,7 +70,8 @@ export class UsuarioController {
          const result: tipo = await prisma.usuario.create({
             data: {
                nombre: nombre,
-               apellido: apellido,
+               apellido_paterno: apellido_paterno,
+               apellido_materno: apellido_materno,
                correo: correo,
                usuario: usuario,
                contrasenia: contrasenia,
@@ -90,11 +92,12 @@ export class UsuarioController {
       type tipo = UsuarioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: number = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
 
          const {
             nombre,
-            apellido,
+            apellido_paterno,
+            apellido_materno,
             correo,
             usuario,
             contrasenia,
@@ -108,7 +111,8 @@ export class UsuarioController {
          const result: tipo = await prisma.usuario.update({
             data: {
                nombre: nombre,
-               apellido: apellido,
+               apellido_paterno: apellido_paterno,
+               apellido_materno: apellido_materno,
                correo: correo,
                usuario: usuario,
                contrasenia: contrasenia,
@@ -155,7 +159,8 @@ export class UsuarioController {
             select: {
                usuario_id: true,
                nombre: true,
-               apellido: true,
+               apellido_paterno: true,
+               apellido_materno: true,
                correo: true,
                usuario: true,
                foto: true,
@@ -167,7 +172,7 @@ export class UsuarioController {
                   select: {
                      privilegio_id: true,
                      abreviatura: true,
-                     tipo: true,
+                     nombre: true,
                   },
                },
             },
@@ -185,7 +190,7 @@ export class UsuarioController {
       type tipo = UsuarioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
 
          const result: tipo = await prisma.usuario.delete({
             where: {
@@ -200,7 +205,7 @@ export class UsuarioController {
       type tipo = ActualizaNombreUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
          const { nombre } = req.body;
 
          const result: tipo = await prisma.usuario.update({
@@ -221,15 +226,17 @@ export class UsuarioController {
       type tipo = ActualizaApellidoUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
-         const { apellido } = req.body;
+         const ID: string = String(req.query.usuario_id);
+         const { apellido_paterno, apellido_materno } = req.body;
 
          const result: tipo = await prisma.usuario.update({
             select: {
-               apellido: true,
+               apellido_paterno: true,
+               apellido_materno: true,
             },
             data: {
-               apellido: apellido,
+               apellido_paterno: apellido_paterno,
+               apellido_materno: apellido_materno,
             },
             where: {
                usuario_id: ID,
@@ -242,7 +249,7 @@ export class UsuarioController {
       type tipo = ActualizaCorreoUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
          const { correo } = req.body;
 
          const result: tipo = await prisma.usuario.update({
@@ -263,7 +270,7 @@ export class UsuarioController {
       type tipo = ActualizaDireccionUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
          const { direccion } = req.body;
 
          const result: tipo = await prisma.usuario.update({
@@ -284,7 +291,7 @@ export class UsuarioController {
       type tipo = number[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
          let { contrasenia_actual, contrasenia_nueva } = req.body;
 
          contrasenia_actual = await encriptar(contrasenia_actual);
@@ -302,7 +309,7 @@ export class UsuarioController {
       type tipo = ActualizaFotoUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.usuario_id);
+         const ID: string = String(req.query.usuario_id);
          const { foto } = req.body;
 
          const result: tipo = await prisma.usuario.update({

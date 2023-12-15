@@ -21,7 +21,7 @@ export class PrivilegioController {
       type tipo = PrivilegioSend | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const idPrivilegio = Number(req.query.privilegio_id);
+         const idPrivilegio: string = String(req.query.privilegio_id);
 
          const result: tipo = await prisma.privilegio.findUnique({
             where: {
@@ -36,10 +36,10 @@ export class PrivilegioController {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const { tipo, activo, abreviatura, fecha_registro } = req.body;
+         const { nombre, activo, abreviatura, fecha_registro } = req.body;
          const result: tipo = await prisma.privilegio.create({
             data: {
-               tipo,
+               nombre,
                activo,
                abreviatura,
                fecha_registro,
@@ -53,13 +53,13 @@ export class PrivilegioController {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const idPrivilegio = Number(req.query.privilegio_id);
+         const idPrivilegio: string = String(req.query.privilegio_id);
 
-         const { tipo, activo, abreviatura, fecha_registro } = req.body;
+         const { nombre, activo, abreviatura, fecha_registro } = req.body;
 
          const result: tipo = await prisma.privilegio.update({
             data: {
-               tipo,
+               nombre,
                activo,
                abreviatura,
                fecha_registro,
@@ -75,7 +75,7 @@ export class PrivilegioController {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID = Number(req.query.privilegio_id);
+         const ID: string = String(req.query.privilegio_id);
 
          const result: tipo = await prisma.privilegio.delete({
             where: {

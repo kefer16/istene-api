@@ -49,7 +49,11 @@ export async function ejecutarOperacion<T>(
    } catch (error: any) {
       await ErrorController.grabarError(400, code_send, error, res);
    } finally {
-      await ApiEnvioController.grabarRespuestaAPI(code_send, res);
+      await ApiEnvioController.grabarRespuestaAPI(
+         code_send,
+         res,
+         respuestaJson
+      );
       prisma.$disconnect;
    }
 }

@@ -24,7 +24,6 @@ export class ErrorController {
          mensaje: "",
          servidor: "",
          fecha_registro: obtenerFechaLocal(),
-         fk_usuario: 1,
       };
 
       if (error instanceof ErrorPersonalizado) {
@@ -80,7 +79,6 @@ export class ErrorController {
                mensaje: errorProps.mensaje,
                servidor: errorProps.servidor,
                fecha_registro: errorProps.fecha_registro,
-               fk_usuario: errorProps.fk_usuario,
             },
          });
 
@@ -101,7 +99,6 @@ export class ErrorController {
                mensaje: error.message,
                servidor: error.parent.serverName,
                fecha_registro: obtenerFechaLocal(),
-               fk_usuario: 1,
             },
          });
       } catch (error) {
