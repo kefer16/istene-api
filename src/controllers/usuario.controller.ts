@@ -5,9 +5,9 @@ import {
    ActualizaDireccionUsuario,
    ActualizaFotoUsuario,
    ActualizaNombreUsuario,
-   UsuarioLoginSend,
+   UsuarioLoginResponse,
    UsuarioPasswordLogin,
-   UsuarioSend,
+   UsuarioResponse,
 } from "../interfaces/usuario.interface";
 import { prisma } from "../config/conexion";
 import { ejecutarOperacion } from "../utils/funciones.utils";
@@ -16,7 +16,7 @@ import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 
 export class UsuarioController {
    static async listarTodos(req: Request, res: Response) {
-      type tipo = UsuarioSend[];
+      type tipo = UsuarioResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const result: tipo = await prisma.usuario.findMany({
@@ -28,30 +28,33 @@ export class UsuarioController {
    }
 
    static async listarUno(req: Request, res: Response) {
-      type tipo = UsuarioSend | null;
+      type tipo = UsuarioResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const ID: string = String(req.query.usuario_id);
 
-         const result: UsuarioSend | null = await prisma.usuario.findUnique({
-            include: {
-               cls_privilegio: {
-                  select: {
-                     privilegio_id: true,
-                     nombre: true,
+         const result: UsuarioResponse | null = await prisma.usuario.findUnique(
+            {
+               include: {
+                  cls_privilegio: {
+                     select: {
+                        privilegio_id: true,
+                        nombre: true,
+                     },
                   },
                },
-            },
-            where: { usuario_id: ID },
-         });
+               where: { usuario_id: ID },
+            }
+         );
          return result;
       });
    }
    static async registrar(req: Request, res: Response) {
-      type tipo = UsuarioSend;
+      type tipo = UsuarioResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          let {
+            dni,
             nombre,
             apellido_paterno,
             apellido_materno,
@@ -62,6 +65,7 @@ export class UsuarioController {
             fecha_registro,
             fk_privilegio,
             direccion,
+            activo,
             telefono,
          } = req.body;
 
@@ -69,18 +73,19 @@ export class UsuarioController {
 
          const result: tipo = await prisma.usuario.create({
             data: {
-               nombre: nombre,
-               apellido_paterno: apellido_paterno,
-               apellido_materno: apellido_materno,
-               correo: correo,
-               usuario: usuario,
-               contrasenia: contrasenia,
-               foto: foto,
-               fecha_registro: fecha_registro,
-               activo: true,
-               fk_privilegio: fk_privilegio,
-               direccion: direccion,
-               telefono: telefono,
+               dni,
+               nombre,
+               apellido_paterno,
+               apellido_materno,
+               correo,
+               usuario,
+               contrasenia,
+               foto,
+               fecha_registro,
+               activo,
+               fk_privilegio,
+               direccion,
+               telefono,
             },
          });
 
@@ -89,7 +94,7 @@ export class UsuarioController {
    }
 
    static async actualizar(req: Request, res: Response) {
-      type tipo = UsuarioSend;
+      type tipo = UsuarioResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const ID: string = String(req.query.usuario_id);
@@ -130,7 +135,7 @@ export class UsuarioController {
    }
 
    static async login(req: Request, res: Response) {
-      type tipo = UsuarioLoginSend | null;
+      type tipo = UsuarioLoginResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const { usuario, contrasenia } = req.body;
@@ -158,6 +163,7 @@ export class UsuarioController {
          const result: tipo = await prisma.usuario.findUnique({
             select: {
                usuario_id: true,
+               dni: true,
                nombre: true,
                apellido_paterno: true,
                apellido_materno: true,
@@ -187,7 +193,7 @@ export class UsuarioController {
    }
 
    static async eliminarUno(req: Request, res: Response) {
-      type tipo = UsuarioSend;
+      type tipo = UsuarioResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const ID: string = String(req.query.usuario_id);

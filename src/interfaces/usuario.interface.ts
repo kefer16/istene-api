@@ -1,5 +1,6 @@
-export interface UsuarioSend {
+export interface UsuarioResponse {
    usuario_id: string;
+   dni: string;
    nombre: string;
    apellido_paterno: string;
    apellido_materno: string;
@@ -14,8 +15,9 @@ export interface UsuarioSend {
    telefono: string;
 }
 
-export interface UsuarioLoginSend {
+export interface UsuarioLoginResponse {
    usuario_id: string;
+   dni: string;
    nombre: string;
    apellido_paterno: string;
    apellido_materno: string;
@@ -26,10 +28,10 @@ export interface UsuarioLoginSend {
    fk_privilegio: string;
    direccion: string;
    telefono: string;
-   cls_privilegio: PrivilegioLogin;
+   cls_privilegio: PrivilegioLoginResponse;
 }
 
-export interface PrivilegioLogin {
+export interface PrivilegioLoginResponse {
    privilegio_id: string;
    nombre: string;
    abreviatura: string;
@@ -37,20 +39,6 @@ export interface PrivilegioLogin {
 
 export interface UsuarioPasswordLogin {
    contrasenia: string | null;
-}
-export interface UsuarioHistorialSend {
-   usuario_id: string;
-   nombre: string;
-   apellido: string;
-   correo: string;
-   usuario: string;
-   contrasenia: string | null;
-   foto: string;
-   fecha_registro: Date;
-   activo: boolean;
-   fk_privilegio: number;
-   direccion: string | null;
-   telefono: string | null;
 }
 
 export interface ActualizaNombreUsuario {

@@ -39,6 +39,7 @@ model Error {
 
 model Usuario {
   usuario_id       String     @id @default(uuid())
+  dni              String     @db.VarChar(8)
   nombre           String     @db.VarChar(150)
   apellido_paterno String     @db.VarChar(150)
   apellido_materno String     @db.VarChar(150)
