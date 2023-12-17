@@ -7,6 +7,8 @@ import mercadopago from "mercadopago";
 import swaggerUi from "swagger-ui-express";
 import { usuarioRoutes } from "./src/routes/usuario.routes";
 import { privilegioRoutes } from "./src/routes/privilegio.router";
+import { operadorRoutes } from "./src/routes/operador.route";
+import { candidatoRoutes } from "./src/routes/candidato.route";
 
 dotenv.config();
 
@@ -42,7 +44,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Routes
 app.use("/privilegio", privilegioRoutes);
 app.use("/usuario", usuarioRoutes);
-
+app.use("/operador", operadorRoutes);
+app.use("/candidato", candidatoRoutes);
 // Authentication middleware for routes that need authentication
 // app.use("/authenticated", autenticacion);
 
