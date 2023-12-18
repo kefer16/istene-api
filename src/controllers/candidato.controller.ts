@@ -20,6 +20,21 @@ export class CandidatoController {
       });
    }
 
+   async eliminarIndividual(req: Request, res: Response) {
+      type tipo = CandidatoResponse | null;
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const id: string = String(req.query.candidato_id);
+
+         const result: tipo = await prisma.candidato.delete({
+            where: {
+               candidato_id: id,
+            },
+         });
+         return result;
+      });
+   }
+
    async registrarIndividual(req: Request, res: Response) {
       type tipo = CandidatoResponse;
 
@@ -126,11 +141,19 @@ export class CandidatoController {
       });
    }
 
-   async listarGrupal(req: Request, res: Response) {
+   async listarGrupalDNI(req: Request, res: Response) {
       type tipo = CandidatoResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
+         const dni: string = String(req.query.dni);
+
          const result: tipo = await prisma.candidato.findMany({
+            where: {
+               dni: {
+                  contains: dni,
+               },
+            },
+
             orderBy: {
                fecha_registro: "desc",
             },

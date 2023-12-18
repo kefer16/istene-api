@@ -9,6 +9,7 @@ import { usuarioRoutes } from "./src/routes/usuario.routes";
 import { privilegioRoutes } from "./src/routes/privilegio.router";
 import { operadorRoutes } from "./src/routes/operador.route";
 import { candidatoRoutes } from "./src/routes/candidato.route";
+import { carreraRoutes } from "./src/routes/carrera.route";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use("/privilegio", privilegioRoutes);
 app.use("/usuario", usuarioRoutes);
 app.use("/operador", operadorRoutes);
 app.use("/candidato", candidatoRoutes);
+app.use("/carrera", carreraRoutes);
 // Authentication middleware for routes that need authentication
 // app.use("/authenticated", autenticacion);
 
