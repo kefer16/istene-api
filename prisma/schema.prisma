@@ -38,33 +38,32 @@ model Error {
 }
 
 model Usuario {
-  usuario_id            String            @id @default(uuid())
-  dni                   String            @db.VarChar(8)
-  nombre                String            @db.VarChar(150)
-  apellido_paterno      String            @db.VarChar(150)
-  apellido_materno      String            @db.VarChar(150)
-  correo                String            @unique @db.VarChar(150)
-  usuario               String            @unique @db.VarChar(150)
-  contrasenia           String?           @db.VarChar(150)
-  foto                  String            @db.VarChar(max)
-  direccion             String            @unique @db.VarChar(500)
-  telefono              String            @db.VarChar(30)
-  fecha_registro        DateTime          @db.DateTime
-  activo                Boolean           @db.Bit
-  fk_privilegio         String            @unique
-  cls_privilegio        Privilegio        @relation(fields: [fk_privilegio], references: [privilegio_id])
-  lst_candidatos        Candidato[]
-  lst_carrera           Carrera[]
-  cls_candidato_carrera CandidatoCarrera?
+  usuario_id       String     @id @default(uuid())
+  dni              String     @db.VarChar(8)
+  nombre           String     @db.VarChar(150)
+  apellido_paterno String     @db.VarChar(150)
+  apellido_materno String     @db.VarChar(150)
+  correo           String     @unique @db.VarChar(150)
+  usuario          String     @unique @db.VarChar(150)
+  contrasenia      String?    @db.VarChar(150)
+  foto             String     @db.VarChar(max)
+  direccion        String     @unique @db.VarChar(500)
+  telefono         String     @db.VarChar(30)
+  fecha_registro   DateTime   @db.DateTime
+  activo           Boolean    @db.Bit
+  fk_privilegio    String     @unique
+  cls_privilegio   Privilegio @relation(fields: [fk_privilegio], references: [privilegio_id])
+  lst_candidatos   Candidato?
+  lst_carrera      Carrera?
 }
 
 model Privilegio {
-  privilegio_id  String    @id @default(uuid())
-  nombre         String    @unique @db.VarChar(50)
-  activo         Boolean   @db.Bit
-  abreviatura    String    @unique @db.VarChar(3)
-  fecha_registro DateTime  @db.DateTime
-  lst_usuario    Usuario[]
+  privilegio_id  String   @id @default(uuid())
+  nombre         String   @unique @db.VarChar(50)
+  activo         Boolean  @db.Bit
+  abreviatura    String   @unique @db.VarChar(3)
+  fecha_registro DateTime @db.DateTime
+  lst_usuario    Usuario?
 }
 
 model Operador {
@@ -72,25 +71,36 @@ model Operador {
   nombre         String      @db.VarChar(15)
   activo         Boolean     @db.Bit
   fecha_registro DateTime    @db.DateTime
-  lst_Operador   Candidato[]
+  lst_operador   Candidato[]
+}
+
+model CandidatoEstado {
+  candidato_estado_id String     @id @default(uuid())
+  abreviatura         String     @db.VarChar(4)
+  nombre              String     @db.VarChar(15)
+  activo              Boolean    @db.Bit
+  fecha_registro      DateTime   @db.DateTime
+  Candidato           Candidato?
 }
 
 model Candidato {
-  candidato_id          String            @id @default(uuid())
-  dni                   String            @unique @db.VarChar(8)
-  nombre                String            @db.VarChar(150)
-  apellido_paterno      String            @db.VarChar(150)
-  apellido_materno      String            @db.VarChar(150)
-  direccion             String            @db.VarChar(300)
-  telefono              String            @db.VarChar(9)
-  observacion           String            @db.VarChar(500)
-  activo                Boolean           @db.Bit
-  fecha_registro        DateTime          @db.DateTime
-  fk_operador           String            @unique
-  fk_usuario            String            @unique
-  cls_usuario           Usuario           @relation(fields: [fk_usuario], references: [usuario_id])
-  cls_operador          Operador          @relation(fields: [fk_operador], references: [operador_id])
-  cls_candidato_carrera CandidatoCarrera?
+  candidato_id          String             @id @default(uuid())
+  dni                   String             @unique @db.VarChar(8)
+  nombre                String             @db.VarChar(150)
+  apellido_paterno      String             @db.VarChar(150)
+  apellido_materno      String             @db.VarChar(150)
+  direccion             String             @db.VarChar(300)
+  telefono              String             @db.VarChar(9)
+  observacion           String             @db.VarChar(500)
+  activo                Boolean            @db.Bit
+  fecha_registro        DateTime           @db.DateTime
+  fk_candidato_estado   String             @unique
+  fk_operador           String             @unique
+  fk_usuario            String             @unique
+  cls_usuario           Usuario            @relation(fields: [fk_usuario], references: [usuario_id])
+  cls_operador          Operador           @relation(fields: [fk_operador], references: [operador_id])
+  cls_candidato_estado  CandidatoEstado    @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
+  lst_candidato_carrera CandidatoCarrera[]
 }
 
 model Carrera {
@@ -103,23 +113,12 @@ model Carrera {
   cls_candidato_carrera CandidatoCarrera?
 }
 
-model LlamadaEstado {
-  llamada_estado_id String   @id @default(uuid())
-  abreviatura       String   @db.VarChar(4)
-  nombre            String   @db.VarChar(15)
-  activo            Boolean  @db.Bit
-  fecha_registro    DateTime @db.DateTime
-}
-
 model CandidatoCarrera {
   candidato_carrera_id String    @id @default(uuid())
   numero_opcion        Int       @db.Int
   activo               Boolean   @db.Bit
-  fecha_registro       DateTime  @db.DateTime
   fk_candidato         String    @unique
   fk_carrera           String    @unique
-  fk_usuario           String    @unique
   cls_candidato        Candidato @relation(fields: [fk_candidato], references: [candidato_id], onUpdate: NoAction)
   cls_carrera          Carrera   @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
-  cls_usuario          Usuario   @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
 }
