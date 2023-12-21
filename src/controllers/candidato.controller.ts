@@ -41,7 +41,7 @@ export class CandidatoController {
                      candidato_carrera_id: true,
                      numero_opcion: true,
                      activo: true,
-                     fk_candidato: true,
+                     fk_carrera: true,
                   },
                },
             },
