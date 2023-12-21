@@ -74,7 +74,7 @@ model Operador {
   lst_operador   Candidato[]
 }
 
-model CandidatoEstado {
+model candidato_estado {
   candidato_estado_id String     @id @default(uuid())
   abreviatura         String     @db.VarChar(4)
   nombre              String     @db.VarChar(15)
@@ -99,7 +99,7 @@ model Candidato {
   fk_usuario            String             @unique
   cls_usuario           Usuario            @relation(fields: [fk_usuario], references: [usuario_id])
   cls_operador          Operador           @relation(fields: [fk_operador], references: [operador_id])
-  cls_candidato_estado  CandidatoEstado    @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
+  cls_candidato_estado  candidato_estado   @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
   lst_candidato_carrera CandidatoCarrera[]
 }
 

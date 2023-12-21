@@ -8,7 +8,7 @@ export class CandidatoEstadoController {
       type tipo = CandidatoEstadoResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const result: tipo = await prisma.candidatoEstado.findMany({
+         const result: tipo = await prisma.candidato_estado.findMany({
             orderBy: {
                fecha_registro: "desc",
             },
@@ -21,7 +21,7 @@ export class CandidatoEstadoController {
       type tipo = CandidatoEstadoResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const result: tipo = await prisma.candidatoEstado.findMany({
+         const result: tipo = await prisma.candidato_estado.findMany({
             where: {
                activo: true,
             },
