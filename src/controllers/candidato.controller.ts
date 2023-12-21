@@ -59,7 +59,7 @@ export class CandidatoController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.candidato_id);
 
-         await prisma.candidatoCarrera.delete({
+         await prisma.candidato_carrera.delete({
             where: {
                fk_candidato: id,
             },
@@ -129,7 +129,7 @@ export class CandidatoController {
             element.fk_candidato = result.candidato_id;
          });
 
-         await prisma.candidatoCarrera.createMany({
+         await prisma.candidato_carrera.createMany({
             data: lstCandidatoCarrera,
          });
 
@@ -190,7 +190,7 @@ export class CandidatoController {
          const lstCandidatoCarrera: CandidatoCarrera[] =
             req.body.lst_candidato_carrera;
 
-         await prisma.candidatoCarrera.updateMany({
+         await prisma.candidato_carrera.updateMany({
             data: lstCandidatoCarrera,
          });
 
