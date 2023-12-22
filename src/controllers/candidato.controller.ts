@@ -74,6 +74,12 @@ export class CandidatoController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.candidato_id);
 
+         await prisma.candidato_historial.delete({
+            where: {
+               fk_candidato: id,
+            },
+         });
+
          await prisma.candidato_carrera.delete({
             where: {
                fk_candidato: id,
