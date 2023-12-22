@@ -8,6 +8,7 @@ import { prisma } from "../config/conexion";
 import { ejecutarOperacion } from "../utils/funciones.utils";
 import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 import { CandidatoCarrera } from "../interfaces/responses/candidato_carrera.response";
+import { CandidatoHistorialRequest } from "../interfaces/requests/candidato.request";
 
 export class CandidatoController {
    async listarIndividual(req: Request, res: Response) {
@@ -28,6 +29,7 @@ export class CandidatoController {
                observacion: true,
                activo: true,
                fecha_registro: true,
+               fecha_actualizacion: true,
                fk_candidato_estado: true,
                fk_operador: true,
                fk_usuario: true,
@@ -42,6 +44,18 @@ export class CandidatoController {
                      numero_opcion: true,
                      activo: true,
                      fk_carrera: true,
+                  },
+               },
+               lst_candidato_historial: {
+                  select: {
+                     cls_usuario: {
+                        select: {
+                           usuario: true,
+                        },
+                     },
+                  },
+                  orderBy: {
+                     fecha_registro: "desc",
                   },
                },
             },
@@ -89,6 +103,7 @@ export class CandidatoController {
             observacion,
             activo,
             fecha_registro,
+            fecha_actualizacion,
             fk_candidato_estado,
             fk_operador,
             fk_usuario,
@@ -117,6 +132,7 @@ export class CandidatoController {
                observacion,
                activo,
                fecha_registro,
+               fecha_actualizacion,
                fk_candidato_estado,
                fk_operador,
                fk_usuario,
@@ -128,6 +144,17 @@ export class CandidatoController {
 
          lstCandidatoCarrera.forEach((element) => {
             element.fk_candidato = result.candidato_id;
+         });
+
+         const clsCandidatoHistorial: CandidatoHistorialRequest =
+            req.body.cls_candidato_historial;
+
+         await prisma.candidato_historial.create({
+            data: {
+               fecha_registro: clsCandidatoHistorial.fecha_registro,
+               fk_usuario: clsCandidatoHistorial.fk_usuario,
+               fk_candidato: clsCandidatoHistorial.fk_candidato,
+            },
          });
 
          await prisma.candidato_carrera.createMany({
@@ -152,6 +179,7 @@ export class CandidatoController {
             direccion,
             telefono,
             observacion,
+            fecha_actualizacion,
             fk_candidato_estado,
             fk_operador,
             fk_usuario,
@@ -181,6 +209,7 @@ export class CandidatoController {
                direccion,
                telefono,
                observacion,
+               fecha_actualizacion,
                fk_candidato_estado,
                fk_operador,
                fk_usuario,
@@ -201,6 +230,17 @@ export class CandidatoController {
 
          lstCandidatoCarrera.forEach((element) => {
             element.fk_candidato = id;
+         });
+
+         const clsCandidatoHistorial: CandidatoHistorialRequest =
+            req.body.cls_candidato_historial;
+
+         await prisma.candidato_historial.create({
+            data: {
+               fecha_registro: clsCandidatoHistorial.fecha_registro,
+               fk_usuario: clsCandidatoHistorial.fk_usuario,
+               fk_candidato: clsCandidatoHistorial.fk_candidato,
+            },
          });
 
          await prisma.candidato_carrera.createMany({
@@ -224,16 +264,23 @@ export class CandidatoController {
                nombre: true,
                apellido_paterno: true,
                apellido_materno: true,
-               fecha_registro: true,
+               fecha_actualizacion: true,
                cls_candidato_estado: {
                   select: {
                      candidato_estado_id: true,
                      abreviatura: true,
                   },
                },
-               cls_usuario: {
+               lst_candidato_historial: {
                   select: {
-                     usuario: true,
+                     cls_usuario: {
+                        select: {
+                           usuario: true,
+                        },
+                     },
+                  },
+                  orderBy: {
+                     fecha_registro: "desc",
                   },
                },
             },
@@ -242,9 +289,8 @@ export class CandidatoController {
                   contains: dni,
                },
             },
-
             orderBy: {
-               fecha_registro: "desc",
+               fecha_actualizacion: "desc",
             },
          });
          return result;

@@ -20,11 +20,15 @@ export interface CandidatoListarGrupalDNIResponse {
    nombre: string;
    apellido_paterno: string;
    apellido_materno: string;
-   fecha_registro: Date;
+   fecha_actualizacion: Date;
    cls_candidato_estado: {
       candidato_estado_id: string;
       abreviatura: string;
    };
+   lst_candidato_historial: CandidatoHistorialListarGrupalDNIResponse[];
+}
+
+export interface CandidatoHistorialListarGrupalDNIResponse {
    cls_usuario: {
       usuario: string;
    };
@@ -48,6 +52,7 @@ export interface CandidatoListarIndividualResponse {
       usuario: string;
    };
    lst_candidato_carrera: CandidatoCarreraListarIndividualResponse[];
+   lst_candidato_historial: CandidatoHistorialListarIndividualResponse[];
 }
 
 export interface CandidatoCarreraListarIndividualResponse {
@@ -55,4 +60,10 @@ export interface CandidatoCarreraListarIndividualResponse {
    numero_opcion: number;
    activo: boolean;
    fk_carrera: string;
+}
+
+export interface CandidatoHistorialListarIndividualResponse {
+   cls_usuario: {
+      usuario: string;
+   };
 }

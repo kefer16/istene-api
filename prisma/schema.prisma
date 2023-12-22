@@ -38,23 +38,24 @@ model Error {
 }
 
 model Usuario {
-  usuario_id       String     @id @default(uuid())
-  dni              String     @db.VarChar(8)
-  nombre           String     @db.VarChar(150)
-  apellido_paterno String     @db.VarChar(150)
-  apellido_materno String     @db.VarChar(150)
-  correo           String     @unique @db.VarChar(150)
-  usuario          String     @unique @db.VarChar(150)
-  contrasenia      String?    @db.VarChar(150)
-  foto             String     @db.VarChar(max)
-  direccion        String     @unique @db.VarChar(500)
-  telefono         String     @db.VarChar(30)
-  fecha_registro   DateTime   @db.DateTime
-  activo           Boolean    @db.Bit
-  fk_privilegio    String     @unique
-  cls_privilegio   Privilegio @relation(fields: [fk_privilegio], references: [privilegio_id])
-  lst_candidatos   Candidato?
-  lst_carrera      Carrera?
+  usuario_id              String               @id @default(uuid())
+  dni                     String               @db.VarChar(8)
+  nombre                  String               @db.VarChar(150)
+  apellido_paterno        String               @db.VarChar(150)
+  apellido_materno        String               @db.VarChar(150)
+  correo                  String               @unique @db.VarChar(150)
+  usuario                 String               @unique @db.VarChar(150)
+  contrasenia             String?              @db.VarChar(150)
+  foto                    String               @db.VarChar(max)
+  direccion               String               @unique @db.VarChar(500)
+  telefono                String               @db.VarChar(30)
+  fecha_registro          DateTime             @db.DateTime
+  activo                  Boolean              @db.Bit
+  fk_privilegio           String               @unique
+  cls_privilegio          Privilegio           @relation(fields: [fk_privilegio], references: [privilegio_id])
+  cls_candidato           Candidato?
+  lst_carrera             Carrera?
+  cls_candidato_historial candidato_historial?
 }
 
 model Privilegio {
@@ -84,23 +85,34 @@ model candidato_estado {
 }
 
 model Candidato {
-  candidato_id          String              @id @default(uuid())
-  dni                   String              @unique @db.VarChar(8)
-  nombre                String              @db.VarChar(150)
-  apellido_paterno      String              @db.VarChar(150)
-  apellido_materno      String              @db.VarChar(150)
-  direccion             String              @db.VarChar(300)
-  telefono              String              @db.VarChar(9)
-  observacion           String              @db.VarChar(500)
-  activo                Boolean             @db.Bit
-  fecha_registro        DateTime            @db.DateTime
-  fk_candidato_estado   String              @unique
-  fk_operador           String              @unique
-  fk_usuario            String              @unique
-  cls_usuario           Usuario             @relation(fields: [fk_usuario], references: [usuario_id])
-  cls_operador          Operador            @relation(fields: [fk_operador], references: [operador_id])
-  cls_candidato_estado  candidato_estado    @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
-  lst_candidato_carrera candidato_carrera[]
+  candidato_id            String                @id @default(uuid())
+  dni                     String                @unique @db.VarChar(8)
+  nombre                  String                @db.VarChar(150)
+  apellido_paterno        String                @db.VarChar(150)
+  apellido_materno        String                @db.VarChar(150)
+  direccion               String                @db.VarChar(300)
+  telefono                String                @db.VarChar(9)
+  observacion             String                @db.VarChar(500)
+  activo                  Boolean               @db.Bit
+  fecha_registro          DateTime              @db.DateTime
+  fecha_actualizacion     DateTime              @db.DateTime
+  fk_candidato_estado     String                @unique
+  fk_operador             String                @unique
+  fk_usuario              String                @unique
+  cls_usuario             Usuario               @relation(fields: [fk_usuario], references: [usuario_id])
+  cls_operador            Operador              @relation(fields: [fk_operador], references: [operador_id])
+  cls_candidato_estado    candidato_estado      @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
+  lst_candidato_carrera   candidato_carrera[]
+  lst_candidato_historial candidato_historial[]
+}
+
+model candidato_historial {
+  candidato_historial_id String    @id @default(uuid())
+  fecha_registro         DateTime  @db.DateTime
+  fk_candidato           String    @unique
+  fk_usuario             String    @unique
+  cls_candidato          Candidato @relation(fields: [fk_candidato], references: [candidato_id], onUpdate: NoAction)
+  cls_usuario            Usuario   @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
 }
 
 model Carrera {
