@@ -159,7 +159,7 @@ export class CandidatoController {
             data: {
                fecha_registro: clsCandidatoHistorial.fecha_registro,
                fk_usuario: clsCandidatoHistorial.fk_usuario,
-               fk_candidato: clsCandidatoHistorial.fk_candidato,
+               fk_candidato: result.candidato_id,
             },
          });
 
@@ -245,7 +245,7 @@ export class CandidatoController {
             data: {
                fecha_registro: clsCandidatoHistorial.fecha_registro,
                fk_usuario: clsCandidatoHistorial.fk_usuario,
-               fk_candidato: clsCandidatoHistorial.fk_candidato,
+               fk_candidato: id,
             },
          });
 
