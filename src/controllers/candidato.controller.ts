@@ -226,7 +226,7 @@ export class CandidatoController {
                cls_candidato_estado: {
                   select: {
                      candidato_estado_id: true,
-                     nombre: true,
+                     abreviatura: true,
                   },
                },
                cls_usuario: {

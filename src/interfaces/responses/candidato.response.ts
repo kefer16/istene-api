@@ -23,7 +23,7 @@ export interface CandidatoListarGrupalDNIResponse {
    fecha_registro: Date;
    cls_candidato_estado: {
       candidato_estado_id: string;
-      nombre: string;
+      abreviatura: string;
    };
    cls_usuario: {
       usuario: string;
