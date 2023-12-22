@@ -152,6 +152,7 @@ export class CandidatoController {
             direccion,
             telefono,
             observacion,
+            fk_candidato_estado,
             fk_operador,
             fk_usuario,
          } = req.body;
@@ -180,6 +181,7 @@ export class CandidatoController {
                direccion,
                telefono,
                observacion,
+               fk_candidato_estado,
                fk_operador,
                fk_usuario,
             },
