@@ -26,11 +26,17 @@ export interface CandidatoListarGrupalDNIResponse {
       abreviatura: string;
    };
    lst_candidato_historial: CandidatoHistorialListarGrupalDNIResponse[];
+   lst_candidato_carrera: CandidatoCarreraListarGrupalDNIResponse[];
 }
 
 export interface CandidatoHistorialListarGrupalDNIResponse {
    cls_usuario: {
       usuario: string;
+   };
+}
+export interface CandidatoCarreraListarGrupalDNIResponse {
+   cls_carrera: {
+      nombre: string;
    };
 }
 

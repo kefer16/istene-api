@@ -289,6 +289,18 @@ export class CandidatoController {
                      fecha_registro: "desc",
                   },
                },
+               lst_candidato_carrera: {
+                  select: {
+                     cls_carrera: {
+                        select: {
+                           nombre: true,
+                        },
+                     },
+                  },
+                  orderBy: {
+                     numero_opcion: "asc",
+                  },
+               },
             },
             where: {
                dni: {
