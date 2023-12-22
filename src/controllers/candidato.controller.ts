@@ -188,10 +188,20 @@ export class CandidatoController {
             },
          });
 
+         await prisma.candidato_carrera.delete({
+            where: {
+               fk_candidato: id,
+            },
+         });
+
          const lstCandidatoCarrera: CandidatoCarrera[] =
             req.body.lst_candidato_carrera;
 
-         await prisma.candidato_carrera.updateMany({
+         lstCandidatoCarrera.forEach((element) => {
+            element.fk_candidato = id;
+         });
+
+         await prisma.candidato_carrera.createMany({
             data: lstCandidatoCarrera,
          });
 
