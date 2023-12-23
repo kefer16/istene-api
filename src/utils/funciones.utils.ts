@@ -45,7 +45,7 @@ export async function ejecutarOperacion<T>(
             error: {
                isValidate: true,
                code: "0",
-               message: "No autorizado",
+               message: "La solicitud no fue autorizada",
             },
          };
          return res.status(401).json(respuestaJson);
