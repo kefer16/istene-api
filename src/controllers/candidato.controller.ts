@@ -285,6 +285,18 @@ export class CandidatoController {
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const dni: string = String(req.query.dni);
+         const fk_candidato_estado: string = String(
+            req.query.fk_candidato_estado
+         );
+
+         const case_where =
+            fk_candidato_estado === "TODOS"
+               ? {}
+               : {
+                    candidato_estado_id: {
+                       equals: fk_candidato_estado,
+                    },
+                 };
 
          const result: tipo = await prisma.candidato.findMany({
             select: {
@@ -329,6 +341,7 @@ export class CandidatoController {
                dni: {
                   contains: dni,
                },
+               cls_candidato_estado: case_where,
             },
             orderBy: {
                fecha_actualizacion: "desc",
