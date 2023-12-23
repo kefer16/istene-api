@@ -17,13 +17,19 @@ export class CandidatoController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const abreviatura: string = String(req.query.abreviatura);
 
+         const case_where =
+            abreviatura === "TODOS"
+               ? {}
+               : {
+                    abreviatura: {
+                       equals: abreviatura,
+                    },
+                 };
+
          const result: tipo = await prisma.candidato.count({
             where: {
-               cls_candidato_estado: {
-                  abreviatura: {
-                     equals: abreviatura,
-                  },
-               },
+               cls_candidato_estado: case_where,
+               activo: true,
             },
          });
 
