@@ -207,7 +207,6 @@ export class CandidatoController {
             fecha_actualizacion,
             fk_candidato_estado,
             fk_operador,
-            fk_usuario,
          } = req.body;
 
          const lstCandidatoCarrera: CandidatoCarrera[] =
@@ -243,7 +242,6 @@ export class CandidatoController {
                fecha_actualizacion,
                fk_candidato_estado,
                fk_operador,
-               fk_usuario,
             },
             where: {
                candidato_id: id,

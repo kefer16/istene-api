@@ -122,13 +122,7 @@ export class CarreraController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.carrera_id);
 
-         const {
-            nombre,
-            descripcion,
-            activo,
-            fecha_actualizacion,
-            fk_usuario,
-         } = req.body;
+         const { nombre, descripcion, activo, fecha_actualizacion } = req.body;
          const clsCarreraHistorial: CarreraHistorialRequest =
             req.body.cls_carrera_historial;
 
@@ -153,7 +147,6 @@ export class CarreraController {
                descripcion,
                activo,
                fecha_actualizacion,
-               fk_usuario,
             },
             where: {
                carrera_id: id,
