@@ -5,6 +5,10 @@ const router = Router();
 const ctlCandidato = new CandidatoController();
 
 //individual
+router.get(
+   "/listar_individual_cantidad_estado",
+   ctlCandidato.listarIndividualCantidadPorEstado
+);
 router.get("/listar_individual", ctlCandidato.listarIndividual);
 router.post("/registrar_individual", ctlCandidato.registrarIndividual);
 router.put("/actualizar_individual", ctlCandidato.actualizarIndividual);

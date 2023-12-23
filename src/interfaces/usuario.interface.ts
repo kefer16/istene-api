@@ -15,6 +15,19 @@ export interface UsuarioResponse {
    telefono: string;
 }
 
+export interface UsuarioListarIndividualResponse {
+   usuario_id: string;
+   dni: string;
+   nombre: string;
+   apellido_paterno: string;
+   apellido_materno: string;
+   correo: string;
+   usuario: string;
+   fecha_registro: Date;
+   direccion: string;
+   telefono: string;
+}
+
 export interface UsuarioLoginResponse {
    usuario_id: string;
    dni: string;
@@ -39,21 +52,6 @@ export interface PrivilegioLoginResponse {
 
 export interface UsuarioPasswordLogin {
    contrasenia: string | null;
-}
-
-export interface ActualizaNombreUsuario {
-   nombre: string;
-}
-
-export interface ActualizaApellidoUsuario {
-   apellido_paterno: string;
-   apellido_materno: string;
-}
-export interface ActualizaCorreoUsuario {
-   correo: string;
-}
-export interface ActualizaDireccionUsuario {
-   direccion: string;
 }
 
 export interface ActualizaFotoUsuario {

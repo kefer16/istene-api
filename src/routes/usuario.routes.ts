@@ -2,18 +2,20 @@ import { Router } from "express";
 import { UsuarioController } from "../controllers/usuario.controller";
 
 const router = Router();
+const ctlUsuario = new UsuarioController();
 
-router.get("/listar_todos", UsuarioController.listarTodos);
-router.get("/listar_uno", UsuarioController.listarUno);
-router.post("/registrar_uno", UsuarioController.registrar);
-router.put("/actualizar_uno", UsuarioController.actualizar);
-router.post("/login", UsuarioController.login);
-router.delete("/eliminar_uno", UsuarioController.eliminarUno);
-router.put("/actualizar_nombre", UsuarioController.actualizarNombre);
-router.put("/actualizar_apellido", UsuarioController.actualizarApellido);
-router.put("/actualizar_correo", UsuarioController.actualizarCorreo);
-router.put("/actualizar_direccion", UsuarioController.actualizarDireccion);
-router.put("/actualizar_foto", UsuarioController.actualizarFoto);
-router.put("/actualizar_contrasenia", UsuarioController.actualizarContrasenia);
+//individual
+router.get("/listar_individual", ctlUsuario.listarIndividual);
+router.post("/registrar_individual", ctlUsuario.registrarIndividual);
+router.put("/actualizar_individual", ctlUsuario.actualizarIndividual);
+router.post("/login", ctlUsuario.login);
+router.put("/actualizar_individual_foto", ctlUsuario.actualizarIndividualFoto);
+router.put(
+   "/actualizar_individual_contrasenia",
+   ctlUsuario.actualizarIndividualContrasenia
+);
+
+//grupal
+router.get("/listar_grupal", ctlUsuario.listarGrupal);
 
 export { router as usuarioRoutes };

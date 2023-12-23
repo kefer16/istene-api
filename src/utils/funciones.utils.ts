@@ -4,6 +4,7 @@ import { ApiEnvioController } from "../controllers/apienvio.controller";
 import { v4 as uuidv4 } from "uuid";
 import { ErrorController } from "../controllers/error.controlller";
 import { prisma } from "../config/conexion";
+import { AutenticacionControlller } from "../middlewares/autentication.middleware";
 
 export const obtenerFechaLocal = () => {
    var local = new Date();
@@ -28,11 +29,27 @@ export async function ejecutarOperacion<T>(
    operacion: () => Promise<T>
 ) {
    const code_send = uuidv4();
+   const ctlAutenticacion = new AutenticacionControlller();
+
    let respuestaJson: RespuestaEntity<T> = new RespuestaEntity();
 
    try {
       prisma.$connect;
+
       await ApiEnvioController.grabarEnvioAPI(code_send, req);
+
+      if (!(await ctlAutenticacion.esBearerValido(req, res))) {
+         respuestaJson = {
+            code: 403,
+            data: null,
+            error: {
+               isValidate: true,
+               code: "0",
+               message: "No autorizado",
+            },
+         };
+         return res.status(401).json(respuestaJson);
+      }
 
       const result = await operacion();
 

@@ -11,6 +11,26 @@ import { CandidatoCarrera } from "../interfaces/responses/candidato_carrera.resp
 import { CandidatoHistorialRequest } from "../interfaces/requests/candidato.request";
 
 export class CandidatoController {
+   async listarIndividualCantidadPorEstado(req: Request, res: Response) {
+      type tipo = number;
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const abreviatura: string = String(req.query.abreviatura);
+
+         const result: tipo = await prisma.candidato.count({
+            where: {
+               cls_candidato_estado: {
+                  abreviatura: {
+                     equals: abreviatura,
+                  },
+               },
+            },
+         });
+
+         return result;
+      });
+   }
+
    async listarIndividual(req: Request, res: Response) {
       type tipo = CandidatoListarIndividualResponse | null;
 
@@ -115,6 +135,12 @@ export class CandidatoController {
             fk_usuario,
          } = req.body;
 
+         const lstCandidatoCarrera: CandidatoCarrera[] =
+            req.body.lst_candidato_carrera;
+
+         const clsCandidatoHistorial: CandidatoHistorialRequest =
+            req.body.cls_candidato_historial;
+
          const NroCandidatosConMismoDni = await prisma.candidato.count({
             where: {
                dni: dni,
@@ -145,15 +171,13 @@ export class CandidatoController {
             },
          });
 
-         const lstCandidatoCarrera: CandidatoCarrera[] =
-            req.body.lst_candidato_carrera;
-
          lstCandidatoCarrera.forEach((element) => {
             element.fk_candidato = result.candidato_id;
          });
 
-         const clsCandidatoHistorial: CandidatoHistorialRequest =
-            req.body.cls_candidato_historial;
+         await prisma.candidato_carrera.createMany({
+            data: lstCandidatoCarrera,
+         });
 
          await prisma.candidato_historial.create({
             data: {
@@ -162,11 +186,6 @@ export class CandidatoController {
                fk_candidato: result.candidato_id,
             },
          });
-
-         await prisma.candidato_carrera.createMany({
-            data: lstCandidatoCarrera,
-         });
-
          return result;
       });
    }
@@ -190,6 +209,12 @@ export class CandidatoController {
             fk_operador,
             fk_usuario,
          } = req.body;
+
+         const lstCandidatoCarrera: CandidatoCarrera[] =
+            req.body.lst_candidato_carrera;
+
+         const clsCandidatoHistorial: CandidatoHistorialRequest =
+            req.body.cls_candidato_historial;
 
          const NroCandidatosConMismoDni = await prisma.candidato.count({
             where: {
@@ -231,15 +256,9 @@ export class CandidatoController {
             },
          });
 
-         const lstCandidatoCarrera: CandidatoCarrera[] =
-            req.body.lst_candidato_carrera;
-
          lstCandidatoCarrera.forEach((element) => {
             element.fk_candidato = id;
          });
-
-         const clsCandidatoHistorial: CandidatoHistorialRequest =
-            req.body.cls_candidato_historial;
 
          await prisma.candidato_historial.create({
             data: {

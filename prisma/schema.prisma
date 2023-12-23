@@ -10,6 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model autenticacion {
+  autenticacion_id String   @id @default(uuid())
+  bearer           String   @db.VarChar(100)
+  fecha_creacion   DateTime @db.DateTime
+  activo           Boolean  @db.Bit
+}
+
 model Api_envio {
   api_envio_id   String   @id @default(uuid())
   codigo_envio   String   @unique
@@ -37,7 +44,7 @@ model Error {
   codigo_envio   String   @unique
 }
 
-model Usuario {
+model usuario {
   usuario_id              String               @id @default(uuid())
   dni                     String               @db.VarChar(8)
   nombre                  String               @db.VarChar(150)
@@ -54,8 +61,9 @@ model Usuario {
   fk_privilegio           String               @unique
   cls_privilegio          Privilegio           @relation(fields: [fk_privilegio], references: [privilegio_id])
   cls_candidato           Candidato?
-  lst_carrera             Carrera?
+  lst_carrera             carrera?
   cls_candidato_historial candidato_historial?
+  cls_carrera_historial   carrera_historial?
 }
 
 model Privilegio {
@@ -64,7 +72,7 @@ model Privilegio {
   activo         Boolean  @db.Bit
   abreviatura    String   @unique @db.VarChar(3)
   fecha_registro DateTime @db.DateTime
-  lst_usuario    Usuario?
+  lst_usuario    usuario?
 }
 
 model Operador {
@@ -99,7 +107,7 @@ model Candidato {
   fk_candidato_estado     String                @unique
   fk_operador             String                @unique
   fk_usuario              String                @unique
-  cls_usuario             Usuario               @relation(fields: [fk_usuario], references: [usuario_id])
+  cls_usuario             usuario               @relation(fields: [fk_usuario], references: [usuario_id])
   cls_operador            Operador              @relation(fields: [fk_operador], references: [operador_id])
   cls_candidato_estado    candidato_estado      @relation(fields: [fk_candidato_estado], references: [candidato_estado_id])
   lst_candidato_carrera   candidato_carrera[]
@@ -112,17 +120,29 @@ model candidato_historial {
   fk_candidato           String    @unique
   fk_usuario             String    @unique
   cls_candidato          Candidato @relation(fields: [fk_candidato], references: [candidato_id], onUpdate: NoAction)
-  cls_usuario            Usuario   @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
+  cls_usuario            usuario   @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
 }
 
-model Carrera {
-  carrera_id            String             @id @default(uuid())
-  nombre                String             @db.VarChar(45)
-  activo                Boolean            @db.Bit
-  fecha_registro        DateTime           @db.DateTime
-  fk_usuario            String             @unique
-  cls_usuario           Usuario            @relation(fields: [fk_usuario], references: [usuario_id])
+model carrera {
+  carrera_id            String              @id @default(uuid())
+  nombre                String              @db.VarChar(45)
+  descripcion           String              @db.VarChar(300)
+  activo                Boolean             @db.Bit
+  fecha_registro        DateTime            @db.DateTime
+  fecha_actualizacion   DateTime            @db.DateTime
+  fk_usuario            String              @unique
+  cls_usuario           usuario             @relation(fields: [fk_usuario], references: [usuario_id])
   cls_candidato_carrera candidato_carrera?
+  lst_carrera_historial carrera_historial[]
+}
+
+model carrera_historial {
+  carrera_historial_id String   @id @default(uuid())
+  fecha_registro       DateTime @db.DateTime
+  fk_carrera           String   @unique
+  fk_usuario           String   @unique
+  cls_carrera          carrera  @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
+  cls_usuario          usuario  @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
 }
 
 model candidato_carrera {
@@ -132,5 +152,5 @@ model candidato_carrera {
   fk_candidato         String    @unique
   fk_carrera           String    @unique
   cls_candidato        Candidato @relation(fields: [fk_candidato], references: [candidato_id], onUpdate: NoAction)
-  cls_carrera          Carrera   @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
+  cls_carrera          carrera   @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
 }

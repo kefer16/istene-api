@@ -26,7 +26,7 @@ export class CandidatoEstadoController {
                activo: true,
             },
             orderBy: {
-               fecha_registro: "desc",
+               nombre: "asc",
             },
          });
          return result;

@@ -4,7 +4,7 @@ import { PrivilegioSend } from "../interfaces/privilegio.interface";
 import { ejecutarOperacion } from "../utils/funciones.utils";
 
 export class PrivilegioController {
-   static async listarTodos(req: Request, res: Response) {
+   async listarGrupal(req: Request, res: Response) {
       type tipo = PrivilegioSend[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -17,7 +17,7 @@ export class PrivilegioController {
       });
    }
 
-   static async listarUno(req: Request, res: Response) {
+   async listarIndividual(req: Request, res: Response) {
       type tipo = PrivilegioSend | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -32,7 +32,7 @@ export class PrivilegioController {
       });
    }
 
-   static async registrar(req: Request, res: Response) {
+   async registrarIndividual(req: Request, res: Response) {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -49,7 +49,7 @@ export class PrivilegioController {
       });
    }
 
-   static async actualizar(req: Request, res: Response) {
+   async actualizarInidvidual(req: Request, res: Response) {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -71,7 +71,7 @@ export class PrivilegioController {
          return result;
       });
    }
-   static async eliminarUno(req: Request, res: Response) {
+   async eliminarIndividual(req: Request, res: Response) {
       type tipo = PrivilegioSend;
 
       await ejecutarOperacion<tipo>(req, res, async () => {

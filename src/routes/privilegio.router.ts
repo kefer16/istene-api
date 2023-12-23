@@ -1,12 +1,16 @@
 import { Router } from "express";
 import { PrivilegioController } from "../controllers/privilegio.controller";
-
 const router = Router();
 
-router.get("/listar_todos", PrivilegioController.listarTodos);
-router.get("/listar_uno", PrivilegioController.listarUno);
-router.post("/registrar_uno", PrivilegioController.registrar);
-router.put("/actualizar_uno", PrivilegioController.actualizar);
-router.delete("/eliminar_uno", PrivilegioController.eliminarUno);
+const ctlPrivilegio = new PrivilegioController();
+
+//individual
+router.get("/listar_individual", ctlPrivilegio.listarIndividual);
+router.post("/registrar_individual", ctlPrivilegio.registrarIndividual);
+router.put("/actualizar_individual", ctlPrivilegio.actualizarInidvidual);
+router.delete("/eliminar_individual", ctlPrivilegio.eliminarIndividual);
+
+//grupal
+router.get("/listar_grupal", ctlPrivilegio.listarGrupal);
 
 export { router as privilegioRoutes };

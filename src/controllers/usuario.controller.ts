@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import {
-   ActualizaApellidoUsuario,
-   ActualizaCorreoUsuario,
-   ActualizaDireccionUsuario,
    ActualizaFotoUsuario,
-   ActualizaNombreUsuario,
+   UsuarioListarIndividualResponse,
    UsuarioLoginResponse,
    UsuarioPasswordLogin,
    UsuarioResponse,
@@ -15,7 +12,7 @@ import { comparar, encriptar } from "../utils/bcrypt";
 import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 
 export class UsuarioController {
-   static async listarTodos(req: Request, res: Response) {
+   async listarGrupal(req: Request, res: Response) {
       type tipo = UsuarioResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -27,29 +24,31 @@ export class UsuarioController {
       });
    }
 
-   static async listarUno(req: Request, res: Response) {
-      type tipo = UsuarioResponse | null;
+   async listarIndividual(req: Request, res: Response) {
+      type tipo = UsuarioListarIndividualResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const ID: string = String(req.query.usuario_id);
 
-         const result: UsuarioResponse | null = await prisma.usuario.findUnique(
-            {
-               include: {
-                  cls_privilegio: {
-                     select: {
-                        privilegio_id: true,
-                        nombre: true,
-                     },
-                  },
-               },
-               where: { usuario_id: ID },
-            }
-         );
+         const result: tipo | null = await prisma.usuario.findUnique({
+            select: {
+               usuario_id: true,
+               dni: true,
+               nombre: true,
+               apellido_paterno: true,
+               apellido_materno: true,
+               correo: true,
+               usuario: true,
+               direccion: true,
+               telefono: true,
+               fecha_registro: true,
+            },
+            where: { usuario_id: ID },
+         });
          return result;
       });
    }
-   static async registrar(req: Request, res: Response) {
+   async registrarIndividual(req: Request, res: Response) {
       type tipo = UsuarioResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -68,6 +67,42 @@ export class UsuarioController {
             activo,
             telefono,
          } = req.body;
+
+         const NroUsuariosConMismoDni = await prisma.usuario.count({
+            where: {
+               dni: dni,
+            },
+         });
+
+         if (NroUsuariosConMismoDni > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo DNI"
+            );
+         }
+
+         const NroUsuariosConMismoCorreo = await prisma.usuario.count({
+            where: {
+               correo: correo,
+            },
+         });
+
+         if (NroUsuariosConMismoCorreo > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo correo"
+            );
+         }
+
+         const NroUsuariosConMismoTelefono = await prisma.usuario.count({
+            where: {
+               telefono: telefono,
+            },
+         });
+
+         if (NroUsuariosConMismoTelefono > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo teléfono"
+            );
+         }
 
          contrasenia = await encriptar(contrasenia);
 
@@ -93,48 +128,58 @@ export class UsuarioController {
       });
    }
 
-   static async actualizar(req: Request, res: Response) {
+   async actualizarIndividual(req: Request, res: Response) {
       type tipo = UsuarioResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
+         const id: string = String(req.query.usuario_id);
 
-         const {
-            nombre,
-            apellido_paterno,
-            apellido_materno,
-            correo,
-            usuario,
-            contrasenia,
-            foto,
-            activo,
-            fk_privilegio,
-            direccion,
-            telefono,
-         } = req.body;
+         const { correo, direccion, telefono } = req.body;
+
+         const NroUsuariosConMismoCorreo = await prisma.usuario.count({
+            where: {
+               correo: correo,
+               NOT: {
+                  usuario_id: id,
+               },
+            },
+         });
+
+         if (NroUsuariosConMismoCorreo > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo correo"
+            );
+         }
+
+         const NroUsuariosConMismoTelefono = await prisma.usuario.count({
+            where: {
+               telefono: telefono,
+               NOT: {
+                  usuario_id: id,
+               },
+            },
+         });
+
+         if (NroUsuariosConMismoTelefono > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo teléfono"
+            );
+         }
 
          const result: tipo = await prisma.usuario.update({
             data: {
-               nombre: nombre,
-               apellido_paterno: apellido_paterno,
-               apellido_materno: apellido_materno,
-               correo: correo,
-               usuario: usuario,
-               contrasenia: contrasenia,
-               foto: foto,
-               activo: activo,
-               fk_privilegio: fk_privilegio,
-               direccion: direccion,
-               telefono: telefono,
+               correo,
+               direccion,
+               telefono,
             },
-            where: { usuario_id: ID },
+            where: { usuario_id: id },
          });
 
          return result;
       });
    }
 
-   static async login(req: Request, res: Response) {
+   async login(req: Request, res: Response) {
       type tipo = UsuarioLoginResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -192,108 +237,7 @@ export class UsuarioController {
       });
    }
 
-   static async eliminarUno(req: Request, res: Response) {
-      type tipo = UsuarioResponse;
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
-
-         const result: tipo = await prisma.usuario.delete({
-            where: {
-               usuario_id: ID,
-            },
-         });
-         return result;
-      });
-   }
-
-   static async actualizarNombre(req: Request, res: Response) {
-      type tipo = ActualizaNombreUsuario;
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
-         const { nombre } = req.body;
-
-         const result: tipo = await prisma.usuario.update({
-            select: {
-               nombre: true,
-            },
-            data: {
-               nombre: nombre,
-            },
-            where: {
-               usuario_id: ID,
-            },
-         });
-         return result;
-      });
-   }
-   static async actualizarApellido(req: Request, res: Response) {
-      type tipo = ActualizaApellidoUsuario;
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
-         const { apellido_paterno, apellido_materno } = req.body;
-
-         const result: tipo = await prisma.usuario.update({
-            select: {
-               apellido_paterno: true,
-               apellido_materno: true,
-            },
-            data: {
-               apellido_paterno: apellido_paterno,
-               apellido_materno: apellido_materno,
-            },
-            where: {
-               usuario_id: ID,
-            },
-         });
-         return result;
-      });
-   }
-   static async actualizarCorreo(req: Request, res: Response) {
-      type tipo = ActualizaCorreoUsuario;
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
-         const { correo } = req.body;
-
-         const result: tipo = await prisma.usuario.update({
-            select: {
-               correo: true,
-            },
-            data: {
-               correo: correo,
-            },
-            where: {
-               usuario_id: ID,
-            },
-         });
-         return result;
-      });
-   }
-   static async actualizarDireccion(req: Request, res: Response) {
-      type tipo = ActualizaDireccionUsuario;
-
-      await ejecutarOperacion<tipo>(req, res, async () => {
-         const ID: string = String(req.query.usuario_id);
-         const { direccion } = req.body;
-
-         const result: tipo = await prisma.usuario.update({
-            select: {
-               direccion: true,
-            },
-            data: {
-               direccion: direccion,
-            },
-            where: {
-               usuario_id: ID,
-            },
-         });
-         return result;
-      });
-   }
-   static async actualizarContrasenia(req: Request, res: Response) {
+   async actualizarIndividualContrasenia(req: Request, res: Response) {
       type tipo = number[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
@@ -302,7 +246,6 @@ export class UsuarioController {
 
          contrasenia_actual = await encriptar(contrasenia_actual);
          contrasenia_nueva = await encriptar(contrasenia_nueva);
-         console.log(contrasenia_actual, contrasenia_nueva);
 
          const result = prisma.$executeRaw`exec sp_actualizar_contrasenia @usuario_id = ${ID}, @contrasenia_actual = ${contrasenia_actual}, @contrasenia_nueva = ${contrasenia_nueva} `;
          const result1 = await prisma.$transaction([result]);
@@ -311,7 +254,7 @@ export class UsuarioController {
       });
    }
 
-   static async actualizarFoto(req: Request, res: Response) {
+   async actualizarIndividualFoto(req: Request, res: Response) {
       type tipo = ActualizaFotoUsuario;
 
       await ejecutarOperacion<tipo>(req, res, async () => {

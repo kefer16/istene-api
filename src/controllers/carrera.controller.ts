@@ -1,17 +1,48 @@
 import { Request, Response } from "express";
-import { CarreraResponse } from "../interfaces/responses/carrera.response";
+import {
+   CarreraListarGrupalNombreResponse,
+   CarreraListarIndividualResponse,
+   CarreraResponse,
+} from "../interfaces/responses/carrera.response";
 import { ejecutarOperacion } from "../utils/funciones.utils";
 import { prisma } from "../config/conexion";
 import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
+import { CarreraHistorialRequest } from "../interfaces/requests/carrera.request";
 
 export class CarreraController {
    async listarIndividual(req: Request, res: Response) {
-      type tipo = CarreraResponse | null;
+      type tipo = CarreraListarIndividualResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.carrera_id);
 
          const result: tipo = await prisma.carrera.findUnique({
+            select: {
+               carrera_id: true,
+               nombre: true,
+               descripcion: true,
+               activo: true,
+               fecha_registro: true,
+               fecha_actualizacion: true,
+               fk_usuario: true,
+               cls_usuario: {
+                  select: {
+                     usuario: true,
+                  },
+               },
+               lst_carrera_historial: {
+                  select: {
+                     cls_usuario: {
+                        select: {
+                           usuario: true,
+                        },
+                     },
+                  },
+                  orderBy: {
+                     fecha_registro: "desc",
+                  },
+               },
+            },
             where: {
                carrera_id: id,
             },
@@ -39,7 +70,17 @@ export class CarreraController {
       type tipo = CarreraResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const { nombre, activo, fecha_registro, fk_usuario } = req.body;
+         const {
+            nombre,
+            descripcion,
+            activo,
+            fecha_registro,
+            fecha_actualizacion,
+            fk_usuario,
+         } = req.body;
+
+         const clsCarreraHistorial: CarreraHistorialRequest =
+            req.body.cls_carrera_historial;
 
          const NroCarrerasConMismoNombre = await prisma.carrera.count({
             where: {
@@ -56,9 +97,19 @@ export class CarreraController {
          const result: tipo = await prisma.carrera.create({
             data: {
                nombre,
+               descripcion,
                activo,
                fecha_registro,
+               fecha_actualizacion,
                fk_usuario,
+            },
+         });
+
+         await prisma.carrera_historial.create({
+            data: {
+               fecha_registro: clsCarreraHistorial.fecha_registro,
+               fk_usuario: clsCarreraHistorial.fk_usuario,
+               fk_carrera: result.carrera_id,
             },
          });
          return result;
@@ -71,7 +122,15 @@ export class CarreraController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.carrera_id);
 
-         const { nombre, activo, fecha_registro, fk_usuario } = req.body;
+         const {
+            nombre,
+            descripcion,
+            activo,
+            fecha_actualizacion,
+            fk_usuario,
+         } = req.body;
+         const clsCarreraHistorial: CarreraHistorialRequest =
+            req.body.cls_carrera_historial;
 
          const NroCarrerasConMismoNombre = await prisma.carrera.count({
             where: {
@@ -91,33 +150,62 @@ export class CarreraController {
          const result: tipo = await prisma.carrera.update({
             data: {
                nombre,
+               descripcion,
                activo,
-               fecha_registro,
+               fecha_actualizacion,
                fk_usuario,
             },
             where: {
                carrera_id: id,
             },
          });
+
+         await prisma.carrera_historial.create({
+            data: {
+               fecha_registro: clsCarreraHistorial.fecha_registro,
+               fk_usuario: clsCarreraHistorial.fk_usuario,
+               fk_carrera: id,
+            },
+         });
+
          return result;
       });
    }
 
    async listarGrupalNombre(req: Request, res: Response) {
-      type tipo = CarreraResponse[];
+      type tipo = CarreraListarGrupalNombreResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const nombre: string = String(req.query.nombre);
 
          const result: tipo = await prisma.carrera.findMany({
+            select: {
+               carrera_id: true,
+               nombre: true,
+               descripcion: true,
+               fecha_registro: true,
+               fecha_actualizacion: true,
+               activo: true,
+               lst_carrera_historial: {
+                  select: {
+                     cls_usuario: {
+                        select: {
+                           usuario: true,
+                        },
+                     },
+                  },
+                  orderBy: {
+                     fecha_registro: "desc",
+                  },
+               },
+            },
             where: {
                nombre: {
                   contains: nombre,
                },
             },
-
             orderBy: {
-               fecha_registro: "desc",
+               fecha_actualizacion: "desc",
             },
          });
          return result;
@@ -133,7 +221,7 @@ export class CarreraController {
                activo: true,
             },
             orderBy: {
-               fecha_registro: "desc",
+               nombre: "asc",
             },
          });
          return result;

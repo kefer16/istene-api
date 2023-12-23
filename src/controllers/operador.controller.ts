@@ -26,7 +26,7 @@ export class OperadorController {
                activo: true,
             },
             orderBy: {
-               fecha_registro: "desc",
+               nombre: "asc",
             },
          });
          return result;
