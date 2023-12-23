@@ -80,6 +80,18 @@ export class UsuarioController {
             );
          }
 
+         const NroUsuariosConUsuario = await prisma.usuario.count({
+            where: {
+               usuario: usuario,
+            },
+         });
+
+         if (NroUsuariosConUsuario > 0) {
+            throw new ErrorPersonalizado(
+               "Ya existe un usuario con el mismo nombre de usuario"
+            );
+         }
+
          const NroUsuariosConMismoCorreo = await prisma.usuario.count({
             where: {
                correo: correo,
@@ -89,18 +101,6 @@ export class UsuarioController {
          if (NroUsuariosConMismoCorreo > 0) {
             throw new ErrorPersonalizado(
                "Ya existe un usuario con el mismo correo"
-            );
-         }
-
-         const NroUsuariosConMismoTelefono = await prisma.usuario.count({
-            where: {
-               telefono: telefono,
-            },
-         });
-
-         if (NroUsuariosConMismoTelefono > 0) {
-            throw new ErrorPersonalizado(
-               "Ya existe un usuario con el mismo teléfono"
             );
          }
 
