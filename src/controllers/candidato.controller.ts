@@ -290,7 +290,7 @@ export class CandidatoController {
          );
 
          const case_where =
-            fk_candidato_estado === "TODOS"
+            fk_candidato_estado === "-1"
                ? {}
                : {
                     candidato_estado_id: {
