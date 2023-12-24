@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/conexion";
-import { CandidatoEstadoResponse } from "../interfaces/responses/candidato_estado.response";
-import { ejecutarOperacion } from "../utils/funciones.utils";
 
-export class CandidatoEstadoController {
+import { ejecutarOperacion } from "../utils/funciones.utils";
+import { PostulanteEstadoResponse } from "../interfaces/responses/postulante_estado.response";
+
+export class PostulanteEstadoController {
    async listarGrupal(req: Request, res: Response) {
-      type tipo = CandidatoEstadoResponse[];
+      type tipo = PostulanteEstadoResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const result: tipo = await prisma.candidato_estado.findMany({
+         const result: tipo = await prisma.postulante_estado.findMany({
             orderBy: {
                fecha_registro: "desc",
             },
@@ -18,10 +19,10 @@ export class CandidatoEstadoController {
    }
 
    async listarGrupalActivos(req: Request, res: Response) {
-      type tipo = CandidatoEstadoResponse[];
+      type tipo = PostulanteEstadoResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const result: tipo = await prisma.candidato_estado.findMany({
+         const result: tipo = await prisma.postulante_estado.findMany({
             where: {
                activo: true,
             },

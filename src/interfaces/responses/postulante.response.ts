@@ -1,5 +1,5 @@
-export interface CandidatoResponse {
-   candidato_id: string;
+export interface PostulanteResponse {
+   postulante_id: string;
    dni: string;
    nombre: string;
    apellido_paterno: string;
@@ -9,39 +9,39 @@ export interface CandidatoResponse {
    observacion: string;
    activo: boolean;
    fecha_registro: Date;
-   fk_candidato_estado: string;
+   fk_postulante_estado: string;
    fk_operador: string;
    fk_usuario: string;
 }
 
-export interface CandidatoListarGrupalDNIResponse {
-   candidato_id: string;
+export interface PostulanteListarGrupalDNIResponse {
+   postulante_id: string;
    dni: string;
    nombre: string;
    apellido_paterno: string;
    apellido_materno: string;
    fecha_actualizacion: Date;
-   cls_candidato_estado: {
-      candidato_estado_id: string;
+   cls_postulante_estado: {
+      postulante_estado_id: string;
       abreviatura: string;
    };
-   lst_candidato_historial: CandidatoHistorialListarGrupalDNIResponse[];
-   lst_candidato_carrera: CandidatoCarreraListarGrupalDNIResponse[];
+   lst_postulante_historial: PostulanteHistorialListarGrupalDNIResponse[];
+   lst_postulante_carrera: PostulanteCarreraListarGrupalDNIResponse[];
 }
 
-export interface CandidatoHistorialListarGrupalDNIResponse {
+export interface PostulanteHistorialListarGrupalDNIResponse {
    cls_usuario: {
       usuario: string;
    };
 }
-export interface CandidatoCarreraListarGrupalDNIResponse {
+export interface PostulanteCarreraListarGrupalDNIResponse {
    cls_carrera: {
       nombre: string;
    };
 }
 
-export interface CandidatoListarIndividualResponse {
-   candidato_id: string;
+export interface PostulanteListarIndividualResponse {
+   postulante_id: string;
    dni: string;
    nombre: string;
    apellido_paterno: string;
@@ -51,24 +51,24 @@ export interface CandidatoListarIndividualResponse {
    observacion: string;
    activo: boolean;
    fecha_registro: Date;
-   fk_candidato_estado: string;
+   fk_postulante_estado: string;
    fk_operador: string;
    fk_usuario: string;
    cls_usuario: {
       usuario: string;
    };
-   lst_candidato_carrera: CandidatoCarreraListarIndividualResponse[];
-   lst_candidato_historial: CandidatoHistorialListarIndividualResponse[];
+   lst_postulante_carrera: PostulanteCarreraListarIndividualResponse[];
+   lst_postulante_historial: PostulanteHistorialListarIndividualResponse[];
 }
 
-export interface CandidatoCarreraListarIndividualResponse {
-   candidato_carrera_id: string;
+export interface PostulanteCarreraListarIndividualResponse {
+   postulante_carrera_id: string;
    numero_opcion: number;
    activo: boolean;
    fk_carrera: string;
 }
 
-export interface CandidatoHistorialListarIndividualResponse {
+export interface PostulanteHistorialListarIndividualResponse {
    cls_usuario: {
       usuario: string;
    };

@@ -38,7 +38,7 @@ export async function ejecutarOperacion<T>(
 
       await ApiEnvioController.grabarEnvioAPI(code_send, req);
 
-      if (!(await ctlAutenticacion.esBearerValido(req, res))) {
+      if (!(await ctlAutenticacion.esBearerValido(req))) {
          respuestaJson = {
             code: 403,
             data: null,

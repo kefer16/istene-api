@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { prisma } from "../config/conexion";
 
 export class AutenticacionControlller {
-   async esBearerValido(req: Request, res: Response) {
+   async esBearerValido(req: Request) {
       const autorizacion = req.headers.authorization;
 
       if (autorizacion?.split(" ")[0] !== "Bearer") {

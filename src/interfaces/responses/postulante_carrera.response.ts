@@ -1,6 +1,6 @@
-export interface CandidatoCarrera {
+export interface PostulanteCarrera {
    numero_opcion: number;
    activo: boolean;
-   fk_candidato: string;
+   fk_postulante: string;
    fk_carrera: string;
 }

@@ -8,9 +8,9 @@ import swaggerUi from "swagger-ui-express";
 import { usuarioRoutes } from "./src/routes/usuario.routes";
 import { privilegioRoutes } from "./src/routes/privilegio.router";
 import { operadorRoutes } from "./src/routes/operador.route";
-import { candidatoRoutes } from "./src/routes/candidato.route";
 import { carreraRoutes } from "./src/routes/carrera.route";
-import { cadidatoEstadoRoutes } from "./src/routes/candidato_estado.route";
+import { PostulanteRoutes } from "./src/routes/postulante.route";
+import { PostulanteEstadoRoutes } from "./src/routes/postulante_estado.route";
 
 dotenv.config();
 
@@ -47,9 +47,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/privilegio", privilegioRoutes);
 app.use("/usuario", usuarioRoutes);
 app.use("/operador", operadorRoutes);
-app.use("/candidato", candidatoRoutes);
 app.use("/carrera", carreraRoutes);
-app.use("/candidato_estado", cadidatoEstadoRoutes);
+app.use("/postulante", PostulanteRoutes);
+app.use("/postulante_estado", PostulanteEstadoRoutes);
 // Authentication middleware for routes that need authentication
 // app.use("/authenticated", autenticacion);
 

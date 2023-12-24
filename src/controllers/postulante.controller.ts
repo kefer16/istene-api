@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import {
-   CandidatoListarGrupalDNIResponse,
-   CandidatoListarIndividualResponse,
-   CandidatoResponse,
-} from "../interfaces/responses/candidato.response";
 import { prisma } from "../config/conexion";
 import { ejecutarOperacion } from "../utils/funciones.utils";
 import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
-import { CandidatoCarrera } from "../interfaces/responses/candidato_carrera.response";
-import { CandidatoHistorialRequest } from "../interfaces/requests/candidato.request";
+import {
+   PostulanteListarGrupalDNIResponse,
+   PostulanteListarIndividualResponse,
+   PostulanteResponse,
+} from "../interfaces/responses/postulante.response";
+import { PostulanteCarrera } from "../interfaces/responses/postulante_carrera.response";
+import { PostulanteHistorialRequest } from "../interfaces/requests/postulante.request";
 
-export class CandidatoController {
+export class PostulanteController {
    async listarIndividualCantidadPorEstado(req: Request, res: Response) {
       type tipo = number;
 
@@ -26,9 +26,9 @@ export class CandidatoController {
                     },
                  };
 
-         const result: tipo = await prisma.candidato.count({
+         const result: tipo = await prisma.postulante.count({
             where: {
-               cls_candidato_estado: case_where,
+               cls_postulante_estado: case_where,
                activo: true,
             },
          });
@@ -38,14 +38,14 @@ export class CandidatoController {
    }
 
    async listarIndividual(req: Request, res: Response) {
-      type tipo = CandidatoListarIndividualResponse | null;
+      type tipo = PostulanteListarIndividualResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const id: string = String(req.query.candidato_id);
+         const id: string = String(req.query.postulante_id);
 
-         const result: tipo = await prisma.candidato.findUnique({
+         const result: tipo = await prisma.postulante.findUnique({
             select: {
-               candidato_id: true,
+               postulante_id: true,
                dni: true,
                nombre: true,
                apellido_paterno: true,
@@ -56,7 +56,7 @@ export class CandidatoController {
                activo: true,
                fecha_registro: true,
                fecha_actualizacion: true,
-               fk_candidato_estado: true,
+               fk_postulante_estado: true,
                fk_operador: true,
                fk_usuario: true,
                cls_usuario: {
@@ -64,15 +64,15 @@ export class CandidatoController {
                      usuario: true,
                   },
                },
-               lst_candidato_carrera: {
+               lst_postulante_carrera: {
                   select: {
-                     candidato_carrera_id: true,
+                     postulante_carrera_id: true,
                      numero_opcion: true,
                      activo: true,
                      fk_carrera: true,
                   },
                },
-               lst_candidato_historial: {
+               lst_postulante_historial: {
                   select: {
                      cls_usuario: {
                         select: {
@@ -86,7 +86,7 @@ export class CandidatoController {
                },
             },
             where: {
-               candidato_id: id,
+               postulante_id: id,
             },
          });
 
@@ -95,26 +95,26 @@ export class CandidatoController {
    }
 
    async eliminarIndividual(req: Request, res: Response) {
-      type tipo = CandidatoResponse | null;
+      type tipo = PostulanteResponse | null;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const id: string = String(req.query.candidato_id);
+         const id: string = String(req.query.postulante_id);
 
-         await prisma.candidato_historial.delete({
+         await prisma.postulante_historial.delete({
             where: {
-               fk_candidato: id,
+               fk_postulante: id,
             },
          });
 
-         await prisma.candidato_carrera.delete({
+         await prisma.postulante_carrera.delete({
             where: {
-               fk_candidato: id,
+               fk_postulante: id,
             },
          });
 
-         const result: tipo = await prisma.candidato.delete({
+         const result: tipo = await prisma.postulante.delete({
             where: {
-               candidato_id: id,
+               postulante_id: id,
             },
          });
          return result;
@@ -122,7 +122,7 @@ export class CandidatoController {
    }
 
    async registrarIndividual(req: Request, res: Response) {
-      type tipo = CandidatoResponse;
+      type tipo = PostulanteResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const {
@@ -136,30 +136,30 @@ export class CandidatoController {
             activo,
             fecha_registro,
             fecha_actualizacion,
-            fk_candidato_estado,
+            fk_postulante_estado,
             fk_operador,
             fk_usuario,
          } = req.body;
 
-         const lstCandidatoCarrera: CandidatoCarrera[] =
-            req.body.lst_candidato_carrera;
+         const lstpostulanteCarrera: PostulanteCarrera[] =
+            req.body.lst_postulante_carrera;
 
-         const clsCandidatoHistorial: CandidatoHistorialRequest =
-            req.body.cls_candidato_historial;
+         const clspostulanteHistorial: PostulanteHistorialRequest =
+            req.body.cls_postulante_historial;
 
-         const NroCandidatosConMismoDni = await prisma.candidato.count({
+         const NropostulantesConMismoDni = await prisma.postulante.count({
             where: {
                dni: dni,
             },
          });
 
-         if (NroCandidatosConMismoDni > 0) {
+         if (NropostulantesConMismoDni > 0) {
             throw new ErrorPersonalizado(
-               "Ya existe un candidato con el mismo DNI"
+               "Ya existe un postulante con el mismo DNI"
             );
          }
 
-         const result: tipo = await prisma.candidato.create({
+         const result: tipo = await prisma.postulante.create({
             data: {
                dni,
                nombre,
@@ -171,25 +171,25 @@ export class CandidatoController {
                activo,
                fecha_registro,
                fecha_actualizacion,
-               fk_candidato_estado,
+               fk_postulante_estado,
                fk_operador,
                fk_usuario,
             },
          });
 
-         lstCandidatoCarrera.forEach((element) => {
-            element.fk_candidato = result.candidato_id;
+         lstpostulanteCarrera.forEach((element) => {
+            element.fk_postulante = result.postulante_id;
          });
 
-         await prisma.candidato_carrera.createMany({
-            data: lstCandidatoCarrera,
+         await prisma.postulante_carrera.createMany({
+            data: lstpostulanteCarrera,
          });
 
-         await prisma.candidato_historial.create({
+         await prisma.postulante_historial.create({
             data: {
-               fecha_registro: clsCandidatoHistorial.fecha_registro,
-               fk_usuario: clsCandidatoHistorial.fk_usuario,
-               fk_candidato: result.candidato_id,
+               fecha_registro: clspostulanteHistorial.fecha_registro,
+               fk_usuario: clspostulanteHistorial.fk_usuario,
+               fk_postulante: result.postulante_id,
             },
          });
          return result;
@@ -197,10 +197,10 @@ export class CandidatoController {
    }
 
    async actualizarIndividual(req: Request, res: Response) {
-      type tipo = CandidatoResponse;
+      type tipo = PostulanteResponse;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const id: string = String(req.query.candidato_id);
+         const id: string = String(req.query.postulante_id);
 
          const {
             dni,
@@ -211,32 +211,32 @@ export class CandidatoController {
             telefono,
             observacion,
             fecha_actualizacion,
-            fk_candidato_estado,
+            fk_postulante_estado,
             fk_operador,
          } = req.body;
 
-         const lstCandidatoCarrera: CandidatoCarrera[] =
-            req.body.lst_candidato_carrera;
+         const lstpostulanteCarrera: PostulanteCarrera[] =
+            req.body.lst_postulante_carrera;
 
-         const clsCandidatoHistorial: CandidatoHistorialRequest =
-            req.body.cls_candidato_historial;
+         const clspostulanteHistorial: PostulanteHistorialRequest =
+            req.body.cls_postulante_historial;
 
-         const NroCandidatosConMismoDni = await prisma.candidato.count({
+         const NropostulantesConMismoDni = await prisma.postulante.count({
             where: {
                dni: dni,
                NOT: {
-                  candidato_id: id,
+                  postulante_id: id,
                },
             },
          });
 
-         if (NroCandidatosConMismoDni > 0) {
+         if (NropostulantesConMismoDni > 0) {
             throw new ErrorPersonalizado(
-               "Ya existe un candidato con el mismo DNI"
+               "Ya existe un postulante con el mismo DNI"
             );
          }
 
-         const result: tipo = await prisma.candidato.update({
+         const result: tipo = await prisma.postulante.update({
             data: {
                dni,
                nombre,
@@ -246,34 +246,34 @@ export class CandidatoController {
                telefono,
                observacion,
                fecha_actualizacion,
-               fk_candidato_estado,
+               fk_postulante_estado,
                fk_operador,
             },
             where: {
-               candidato_id: id,
+               postulante_id: id,
             },
          });
 
-         await prisma.candidato_carrera.delete({
+         await prisma.postulante_carrera.delete({
             where: {
-               fk_candidato: id,
+               fk_postulante: id,
             },
          });
 
-         lstCandidatoCarrera.forEach((element) => {
-            element.fk_candidato = id;
+         lstpostulanteCarrera.forEach((element) => {
+            element.fk_postulante = id;
          });
 
-         await prisma.candidato_historial.create({
+         await prisma.postulante_historial.create({
             data: {
-               fecha_registro: clsCandidatoHistorial.fecha_registro,
-               fk_usuario: clsCandidatoHistorial.fk_usuario,
-               fk_candidato: id,
+               fecha_registro: clspostulanteHistorial.fecha_registro,
+               fk_usuario: clspostulanteHistorial.fk_usuario,
+               fk_postulante: id,
             },
          });
 
-         await prisma.candidato_carrera.createMany({
-            data: lstCandidatoCarrera,
+         await prisma.postulante_carrera.createMany({
+            data: lstpostulanteCarrera,
          });
 
          return result;
@@ -281,38 +281,38 @@ export class CandidatoController {
    }
 
    async listarGrupalDNI(req: Request, res: Response) {
-      type tipo = CandidatoListarGrupalDNIResponse[];
+      type tipo = PostulanteListarGrupalDNIResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const dni: string = String(req.query.dni);
-         const fk_candidato_estado: string = String(
-            req.query.fk_candidato_estado
+         const fk_postulante_estado: string = String(
+            req.query.fk_postulante_estado
          );
 
          const case_where =
-            fk_candidato_estado === "-1"
+            fk_postulante_estado === "-1"
                ? {}
                : {
-                    candidato_estado_id: {
-                       equals: fk_candidato_estado,
+                    postulante_estado_id: {
+                       equals: fk_postulante_estado,
                     },
                  };
 
-         const result: tipo = await prisma.candidato.findMany({
+         const result: tipo = await prisma.postulante.findMany({
             select: {
-               candidato_id: true,
+               postulante_id: true,
                dni: true,
                nombre: true,
                apellido_paterno: true,
                apellido_materno: true,
                fecha_actualizacion: true,
-               cls_candidato_estado: {
+               cls_postulante_estado: {
                   select: {
-                     candidato_estado_id: true,
+                     postulante_estado_id: true,
                      abreviatura: true,
                   },
                },
-               lst_candidato_historial: {
+               lst_postulante_historial: {
                   select: {
                      cls_usuario: {
                         select: {
@@ -324,7 +324,7 @@ export class CandidatoController {
                      fecha_registro: "desc",
                   },
                },
-               lst_candidato_carrera: {
+               lst_postulante_carrera: {
                   select: {
                      cls_carrera: {
                         select: {
@@ -341,7 +341,7 @@ export class CandidatoController {
                dni: {
                   contains: dni,
                },
-               cls_candidato_estado: case_where,
+               cls_postulante_estado: case_where,
             },
             orderBy: {
                fecha_actualizacion: "desc",
@@ -352,10 +352,10 @@ export class CandidatoController {
    }
 
    async listarGrupalActivos(req: Request, res: Response) {
-      type tipo = CandidatoResponse[];
+      type tipo = PostulanteResponse[];
 
       await ejecutarOperacion<tipo>(req, res, async () => {
-         const result: tipo = await prisma.candidato.findMany({
+         const result: tipo = await prisma.postulante.findMany({
             where: {
                activo: true,
             },

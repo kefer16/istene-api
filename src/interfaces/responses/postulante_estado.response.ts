@@ -1,5 +1,5 @@
-export interface CandidatoEstadoResponse {
-   candidato_estado_id: string;
+export interface PostulanteEstadoResponse {
+   postulante_estado_id: string;
    abreviatura: string;
    nombre: string;
    activo: boolean;
