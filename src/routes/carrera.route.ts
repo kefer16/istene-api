@@ -5,6 +5,11 @@ const router = Router();
 const ctlCarrera = new CarreraController();
 
 //individual
+
+router.get(
+   "/listar_individual_nro_activos",
+   ctlCarrera.listarIndividualNroActivos
+);
 router.get("/listar_individual", ctlCarrera.listarIndividual);
 router.post("/registrar_individual", ctlCarrera.registrarIndividual);
 router.put("/actualizar_individual", ctlCarrera.actualizarIndividual);

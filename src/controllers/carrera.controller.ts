@@ -10,6 +10,18 @@ import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 import { CarreraHistorialRequest } from "../interfaces/requests/carrera.request";
 
 export class CarreraController {
+   async listarIndividualNroActivos(req: Request, res: Response) {
+      type tipo = number | null;
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const result: tipo = await prisma.carrera.count({
+            where: {
+               activo: true,
+            },
+         });
+         return result;
+      });
+   }
    async listarIndividual(req: Request, res: Response) {
       type tipo = CarreraListarIndividualResponse | null;
 

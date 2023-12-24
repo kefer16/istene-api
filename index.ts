@@ -11,6 +11,7 @@ import { operadorRoutes } from "./src/routes/operador.route";
 import { carreraRoutes } from "./src/routes/carrera.route";
 import { PostulanteRoutes } from "./src/routes/postulante.route";
 import { PostulanteEstadoRoutes } from "./src/routes/postulante_estado.route";
+import { ReniecRoutes } from "./src/routes/reniec.route";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use("/privilegio", privilegioRoutes);
+app.use("/reniec", ReniecRoutes);
 app.use("/usuario", usuarioRoutes);
 app.use("/operador", operadorRoutes);
 app.use("/carrera", carreraRoutes);
