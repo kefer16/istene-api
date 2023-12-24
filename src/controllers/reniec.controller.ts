@@ -29,7 +29,9 @@ export class ReniecController {
             data = await axios.get(`${reniecUrl}/dni?numero=${dni}`, config);
          } catch (error: any) {
             console.log(error.response.status);
-
+            if (error.response.status === 404) {
+               throw new ErrorPersonalizado("No se encontró el DNI en RENIEC");
+            }
             if (error.response.status === 422) {
                throw new ErrorPersonalizado("No se encontró el DNI en RENIEC");
             }
