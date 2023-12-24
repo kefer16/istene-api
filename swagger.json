@@ -1,8 +1,8 @@
 {
 	"openapi": "3.0.0",
 	"info": {
-		"title": "API Gamertec",
-		"description": "Esta es una API RESTful de una tienda online orientada a Gamers",
+		"title": "API ISETEN",
+		"description": "Esta es una API RESTfull para registro de postulantes",
 		"version": "1.0.0"
 	},
 	"servers": [

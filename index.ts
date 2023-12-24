@@ -50,13 +50,6 @@ app.use("/operador", operadorRoutes);
 app.use("/carrera", carreraRoutes);
 app.use("/postulante", PostulanteRoutes);
 app.use("/postulante_estado", PostulanteEstadoRoutes);
-// Authentication middleware for routes that need authentication
-// app.use("/authenticated", autenticacion);
-
-// Example route that requires authentication
-// app.get("/authenticated/example", (req, res) => {
-// 	return res.json({ message: "Authenticated" });
-// });
 
 app.listen(port, () =>
    console.log(`Server running on port ${port} + ${process.env.API_HOST}`)

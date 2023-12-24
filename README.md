@@ -1,6 +1,6 @@
 # ISTENE API
 
-api de tienda online Gamertec, desplegada en Railway
+api de aplicacion ISTENE, desplegada en Railway
 
 ## Previsualización
 
