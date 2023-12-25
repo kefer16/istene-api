@@ -81,6 +81,12 @@ export class CarreraController {
             );
          }
 
+         await prisma.carrera_historial.delete({
+            where: {
+               fk_carrera: id,
+            },
+         });
+
          const result: tipo = await prisma.carrera.delete({
             where: {
                carrera_id: id,
