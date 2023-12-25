@@ -244,9 +244,6 @@ export class UsuarioController {
          const ID: string = String(req.query.usuario_id);
          let { contrasenia_actual, contrasenia_nueva } = req.body;
 
-         contrasenia_actual = await encriptar(contrasenia_actual);
-         contrasenia_nueva = await encriptar(contrasenia_nueva);
-
          const contrasenia_actual_encriptada: UsuarioPasswordLogin | null =
             await prisma.usuario.findUnique({
                select: {
@@ -270,6 +267,8 @@ export class UsuarioController {
          ) {
             throw new ErrorPersonalizado("La contraseña actual es incorrecta");
          }
+
+         contrasenia_nueva = await encriptar(contrasenia_nueva);
 
          await prisma.usuario.update({
             data: {
