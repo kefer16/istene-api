@@ -420,11 +420,15 @@ export class PostulanteController {
                },
                lst_postulante_carrera: {
                   select: {
+                     numero_opcion: true,
                      cls_carrera: {
                         select: {
                            nombre: true,
                         },
                      },
+                  },
+                  orderBy: {
+                     numero_opcion: "asc",
                   },
                },
             },
