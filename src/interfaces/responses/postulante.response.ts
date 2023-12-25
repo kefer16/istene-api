@@ -93,6 +93,7 @@ export interface PostulanteReportesListarGrupal {
 }
 
 export interface PostulanteCarreraReporteListarGrupal {
+   numero_opcion: number;
    cls_carrera: {
       nombre: string;
    };
