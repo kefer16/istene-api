@@ -5,6 +5,7 @@ import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 import {
    PostulanteListarGrupalDNIResponse,
    PostulanteListarIndividualResponse,
+   PostulanteReportesListarGrupal,
    PostulanteResponse,
 } from "../interfaces/responses/postulante.response";
 import { PostulanteCarrera } from "../interfaces/responses/postulante_carrera.response";
@@ -361,6 +362,79 @@ export class PostulanteController {
             },
             orderBy: {
                fecha_registro: "desc",
+            },
+         });
+         return result;
+      });
+   }
+
+   async listarGrupalReportesFiltro(req: Request, res: Response) {
+      type tipo = PostulanteReportesListarGrupal[];
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const fk_postulante_estado: string = String(
+            req.query.fk_postulante_estado
+         );
+         const fk_postulante_carrera: string = String(
+            req.query.fk_postulante_carrera
+         );
+
+         const case_when_postulante_estado =
+            fk_postulante_estado === "-1"
+               ? {}
+               : {
+                    postulante_estado_id: {
+                       equals: fk_postulante_estado,
+                    },
+                 };
+         const case_when_postulante_carrera =
+            fk_postulante_carrera === "-1"
+               ? {}
+               : {
+                    some: {
+                       fk_carrera: fk_postulante_carrera,
+                    },
+                 };
+
+         const result: tipo = await prisma.postulante.findMany({
+            select: {
+               dni: true,
+               nombre: true,
+               apellido_paterno: true,
+               apellido_materno: true,
+               telefono: true,
+               cls_postulante_estado: {
+                  select: {
+                     nombre: true,
+                  },
+               },
+               cls_operador: {
+                  select: {
+                     nombre: true,
+                  },
+               },
+               cls_usuario: {
+                  select: {
+                     usuario: true,
+                  },
+               },
+               lst_postulante_carrera: {
+                  select: {
+                     cls_carrera: {
+                        select: {
+                           nombre: true,
+                        },
+                     },
+                  },
+               },
+            },
+            where: {
+               activo: true,
+               cls_postulante_estado: case_when_postulante_estado,
+               lst_postulante_carrera: case_when_postulante_carrera,
+            },
+            orderBy: {
+               fecha_actualizacion: "asc",
             },
          });
          return result;

@@ -73,3 +73,27 @@ export interface PostulanteHistorialListarIndividualResponse {
       usuario: string;
    };
 }
+
+export interface PostulanteReportesListarGrupal {
+   dni: string;
+   nombre: string;
+   apellido_paterno: string;
+   apellido_materno: string;
+   telefono: string;
+   cls_postulante_estado: {
+      nombre: string;
+   };
+   cls_operador: {
+      nombre: string;
+   };
+   cls_usuario: {
+      usuario: string;
+   };
+   lst_postulante_carrera: PostulanteCarreraReporteListarGrupal[];
+}
+
+export interface PostulanteCarreraReporteListarGrupal {
+   cls_carrera: {
+      nombre: string;
+   };
+}

@@ -16,5 +16,9 @@ router.delete("/eliminar_individual", ctlPostulante.eliminarIndividual);
 //grupal
 router.get("/listar_grupal_dni", ctlPostulante.listarGrupalDNI);
 router.get("/listar_grupal_activos", ctlPostulante.listarGrupalActivos);
+router.get(
+   "/listar_grupal_reportes_filtro",
+   ctlPostulante.listarGrupalReportesFiltro
+);
 
 export { router as PostulanteRoutes };
