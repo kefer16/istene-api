@@ -20,5 +20,9 @@ router.get(
    "/listar_grupal_reportes_filtro",
    ctlPostulante.listarGrupalReportesFiltro
 );
+router.get(
+   "/listar_grupal_activos_prueba",
+   ctlPostulante.listarGrupalActivosPrueba
+);
 
 export { router as PostulanteRoutes };

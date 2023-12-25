@@ -98,3 +98,10 @@ export interface PostulanteCarreraReporteListarGrupal {
       nombre: string;
    };
 }
+
+export interface PostulanteListarGrupalActivosPrueba {
+   dni: string;
+   nombre: string;
+   apellido_paterno: string;
+   apellido_materno: string;
+}

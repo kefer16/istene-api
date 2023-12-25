@@ -3,6 +3,7 @@ import { prisma } from "../config/conexion";
 import { ejecutarOperacion } from "../utils/funciones.utils";
 import { ErrorPersonalizado } from "../entities/errorPersonalizado.entity";
 import {
+   PostulanteListarGrupalActivosPrueba,
    PostulanteListarGrupalDNIResponse,
    PostulanteListarIndividualResponse,
    PostulanteReportesListarGrupal,
@@ -445,6 +446,29 @@ export class PostulanteController {
                fecha_actualizacion: "asc",
             },
          });
+         return result;
+      });
+   }
+
+   async listarGrupalActivosPrueba(req: Request, res: Response) {
+      type tipo = PostulanteListarGrupalActivosPrueba[];
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const result: tipo = await prisma.postulante.findMany({
+            select: {
+               dni: true,
+               nombre: true,
+               apellido_paterno: true,
+               apellido_materno: true,
+            },
+            where: {
+               activo: true,
+            },
+            orderBy: {
+               fecha_actualizacion: "desc",
+            },
+         });
+
          return result;
       });
    }
