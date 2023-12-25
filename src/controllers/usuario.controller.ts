@@ -238,7 +238,7 @@ export class UsuarioController {
    }
 
    async actualizarIndividualContrasenia(req: Request, res: Response) {
-      type tipo = number[];
+      type tipo = number;
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const ID: string = String(req.query.usuario_id);
@@ -247,10 +247,41 @@ export class UsuarioController {
          contrasenia_actual = await encriptar(contrasenia_actual);
          contrasenia_nueva = await encriptar(contrasenia_nueva);
 
-         const result = prisma.$executeRaw`exec sp_actualizar_contrasenia @usuario_id = ${ID}, @contrasenia_actual = ${contrasenia_actual}, @contrasenia_nueva = ${contrasenia_nueva} `;
-         const result1 = await prisma.$transaction([result]);
+         const contrasenia_actual_encriptada: UsuarioPasswordLogin | null =
+            await prisma.usuario.findUnique({
+               select: {
+                  contrasenia: true,
+               },
+               where: {
+                  usuario_id: ID,
+                  activo: true,
+               },
+            });
 
-         return result1;
+         if (!contrasenia_actual_encriptada?.contrasenia) {
+            throw new ErrorPersonalizado("No se encontró usuario");
+         }
+
+         if (
+            !(await comparar(
+               contrasenia_actual,
+               contrasenia_actual_encriptada.contrasenia
+            ))
+         ) {
+            throw new ErrorPersonalizado("La contraseña actual es incorrecta");
+         }
+
+         await prisma.usuario.update({
+            data: {
+               contrasenia: contrasenia_nueva,
+            },
+            where: {
+               usuario_id: ID,
+               activo: true,
+            },
+         });
+
+         return 1;
       });
    }
 

@@ -69,6 +69,18 @@ export class CarreraController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const id: string = String(req.query.carrera_id);
 
+         const NroPostulantesConMismoCarrera =
+            await prisma.postulante_carrera.count({
+               where: {
+                  fk_carrera: id,
+               },
+            });
+         if (NroPostulantesConMismoCarrera > 0) {
+            throw new ErrorPersonalizado(
+               `No se puede eliminar la carrera, ya se asignó a ${NroPostulantesConMismoCarrera} postulantes`
+            );
+         }
+
          const result: tipo = await prisma.carrera.delete({
             where: {
                carrera_id: id,
