@@ -200,6 +200,9 @@ export class CarreraController {
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const nombre: string = String(req.query.nombre);
+         const activo: string = String(req.query.activo);
+
+         const case_where_activo = activo === "-1" ? {} : Boolean(activo);
 
          const result: tipo = await prisma.carrera.findMany({
             select: {
@@ -226,6 +229,7 @@ export class CarreraController {
                nombre: {
                   contains: nombre,
                },
+               activo: case_where_activo,
             },
             orderBy: {
                fecha_actualizacion: "desc",

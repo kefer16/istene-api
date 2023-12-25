@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
    ActualizaFotoUsuario,
+   UsuarioListarGrupalActivosResponse,
    UsuarioListarIndividualResponse,
    UsuarioLoginResponse,
    UsuarioPasswordLogin,
@@ -18,6 +19,22 @@ export class UsuarioController {
       await ejecutarOperacion<tipo>(req, res, async () => {
          const result: tipo = await prisma.usuario.findMany({
             orderBy: { fecha_registro: "desc" },
+         });
+
+         return result;
+      });
+   }
+
+   async listarGrupalActivos(req: Request, res: Response) {
+      type tipo = UsuarioListarGrupalActivosResponse[];
+
+      await ejecutarOperacion<tipo>(req, res, async () => {
+         const result: tipo = await prisma.usuario.findMany({
+            select: {
+               usuario_id: true,
+               usuario: true,
+            },
+            orderBy: { usuario: "asc" },
          });
 
          return result;

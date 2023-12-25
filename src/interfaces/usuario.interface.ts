@@ -15,6 +15,11 @@ export interface UsuarioResponse {
    telefono: string;
 }
 
+export interface UsuarioListarGrupalActivosResponse {
+   usuario_id: string;
+   usuario: string;
+}
+
 export interface UsuarioListarIndividualResponse {
    usuario_id: string;
    dni: string;

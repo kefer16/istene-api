@@ -378,6 +378,7 @@ export class PostulanteController {
          const fk_postulante_carrera: string = String(
             req.query.fk_postulante_carrera
          );
+         const fk_usuario: string = String(req.query.fk_usuario);
 
          const case_when_postulante_estado =
             fk_postulante_estado === "-1"
@@ -395,6 +396,8 @@ export class PostulanteController {
                        fk_carrera: fk_postulante_carrera,
                     },
                  };
+
+         const case_when_usuario = fk_usuario === "-1" ? {} : fk_usuario;
 
          const result: tipo = await prisma.postulante.findMany({
             select: {
@@ -436,6 +439,7 @@ export class PostulanteController {
                activo: true,
                cls_postulante_estado: case_when_postulante_estado,
                lst_postulante_carrera: case_when_postulante_carrera,
+               fk_usuario: case_when_usuario,
             },
             orderBy: {
                fecha_actualizacion: "asc",

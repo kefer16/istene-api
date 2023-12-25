@@ -17,5 +17,6 @@ router.put(
 
 //grupal
 router.get("/listar_grupal", ctlUsuario.listarGrupal);
+router.get("/listar_grupal_activos", ctlUsuario.listarGrupalActivos);
 
 export { router as usuarioRoutes };
