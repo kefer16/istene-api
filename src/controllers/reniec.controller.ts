@@ -15,7 +15,6 @@ export class ReniecController {
 
       await ejecutarOperacion<tipo>(req, res, async () => {
          const dni: string = String(req.query.dni);
-         console.log(dni);
 
          const config = {
             headers: {
@@ -39,6 +38,10 @@ export class ReniecController {
                throw new ErrorPersonalizado("El APIKEY de RENIEC expiró");
             }
             throw new ErrorPersonalizado("Ocurró un error al consultar RENIEC");
+         }
+
+         if (data.data.dni === "" || data.data.dni === null) {
+            throw new ErrorPersonalizado("No se encontró el DNI en RENIEC");
          }
 
          const dataReniec: ReniecResponse = {
